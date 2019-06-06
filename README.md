@@ -5,8 +5,8 @@ This repository is for the development of a digital image archive at the Nationa
 ## layout
 
 - `sql/` is for data in MySQL format
-- `api/` is for code supporting a public API
-- `scripts/` is for scripts that scrape metadata
+- `import/` is for data-processing
+- `api/` is for code supporting an API
 
 ## references
 
