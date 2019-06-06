@@ -1,0 +1,8 @@
+# minimal gitignore <ccg, 2019-05-29> # 
+
+*.JPG
+*.jpg
+*.pdf
+
+__pycache__
+.ipynb_checkpoints
