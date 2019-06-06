@@ -69,7 +69,7 @@ def download_nara_entry(entry): # entry is assumed to be a *DataFrame*
             os.mkdir(val)
 
     # write NARA API output to file for reference
-    api_output = "{0}/nara_id_{1}.json".format(paths['metadata'], nara_id)
+    api_output = "{0}/nara_id_{1}.json".format(paths['metadata'], digital_directory, nara_id)
     if res.status_code == 200:
         with open(api_output, 'wb') as f:
             f.write(res.content)
@@ -87,7 +87,7 @@ def download_nara_entry(entry): # entry is assumed to be a *DataFrame*
 
             # create subdirectory if needed
             img_path = '{0}/nara_id_{1}'\
-                       .format(paths['data'], nara_id)
+                       .format(paths['data'], digital_directory, nara_id)
             img_p = Path(img_path)
             if (img_p.exists() == False and img_p.is_dir() == False):
                 os.mkdir(img_path)
