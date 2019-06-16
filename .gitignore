@@ -2,7 +2,9 @@
 
 *.JPG
 *.jpg
+*.jp2
 *.pdf
 
+data
 __pycache__
 .ipynb_checkpoints

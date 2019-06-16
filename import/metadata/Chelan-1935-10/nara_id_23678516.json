@@ -1,7 +1,7 @@
 {
   "opaResponse":{
     "@status":"200",
-    "time":"2019-06-03T00:48:00.845Z",
+    "time":"2019-06-03T02:01:04.739Z",
     "request":{
       "format":"json",
       "pretty":true,
@@ -9,7 +9,7 @@
       "naIds":"23678516"
     },
     "results":{
-      "queryTime":16,
+      "queryTime":21,
       "total":1,
       "offset":0,
       "rows":10,
