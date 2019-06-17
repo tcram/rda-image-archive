@@ -1,0 +1,40 @@
+create table observations(
+    pid binary(16),
+    otime datetime,
+    lat float(10,6),
+    lon float(10,6),
+    fix bool default null, #exact location?
+    di    tinyint ,  #wind direction indicator (0-6)
+    d     smallint,  #wind direction (1-362)
+    wi    tinyint ,  #wind speed indicator (0-8)
+    w     smallint,  #wind speed, 0.1 m/s (0-999)
+    vi    tinyint ,  #vv indicator (0-2)
+    vv    tinyint ,  #visibility (90-99)
+    ww    tinyint ,  #present weather (0-99)
+    w1    tinyint ,  #past weather (0-9)
+    slp   smallint,  #sea level pressure, 0.1 hpa (8700-10746)
+    a     tinyint ,  #characteristic of ppp (0-8)
+    ppp   smallint,  #atmospheric pressure tend., 0.1 hpa (0-510)
+    it    tinyint ,  #indicator for temperature (0-9)
+    at    smallint,  #air temperature, 0.1 degree c (-999-999)
+    wbti  tinyint ,  #indicator for wbt (0-3)
+    wbt   smallint,  #wet-bulb temperature, 0.1 degree c (-999-999)
+    dpti  tinyint ,  #indicator for dpt, (0-3)
+    dpt   smallint,  #dew-point temperature, 0.1 degree c (-999-999)
+    si    tinyint ,  #sst measurement method, (0-12)
+    sst   smallint,  #sea surface temperature, 0.1 degree c (-999-999)
+    n     tinyint ,  #total cloud amount (0-9)
+    nh    tinyint ,  #lower cloud amount (0-9)
+    cl    char(1) ,  #lower cloud type (0-a)
+    hi    tinyint ,  #h indicator (0-1)
+    h     char(1) ,  #cloud height (0-a)
+    cm    char(1) ,  #middle cloud type (0-a)
+    ch    char(1) ,  #high cloud type (0-a)
+    wd    tinyint ,  #wave direction (0-38)
+    wp    tinyint ,  #wave period (0-30,99)
+    wh    tinyint ,  #wave height (0-99)
+    sd    tinyint ,  #swell direction (0-38)
+    sp    tinyint ,  #swell period (0-30,99)
+    sh    tinyint ,  #swell height (0-99)
+    primary key (pid, otime)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
