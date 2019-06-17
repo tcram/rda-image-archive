@@ -50,19 +50,3 @@ def assign_uuids(iterator):
         page_ext = os.path.splitext(page)[1]
         assignments.extend((page, (sequential_uuid(), page_ext)))
     return assignments
-
-
-#  fakesection: metadata harvesting # 
-
-# nara_jsons = [x for x in Path(metadata_path).glob('**/nara_id_*.json')]
-# ia_jsons = [x for x in Path(metadata_path).glob('**/*.json') if not x.name.startswith('nara_id_')]
-
-# nara_frames = []
-# for j in nara_jsons:
-#     with open(j) as f:
-#         nara_frames.append(json_normalize(
-#             json.load(f)['opaResponse']['results']['result'][0]))
-
-# for x in nara_frames[0]['objects.object'][0]:
-#     if not x['file']['@mime'] == 'application/pdf':
-#         print(x)

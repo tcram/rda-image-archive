@@ -14,10 +14,10 @@ from pandas.io.json import json_normalize
 from pathlib import Path
 import os
 
-mpath = os.path.abspath(os.path.join(os.pardir, 'import', 'metadata'))
+metadata_path = os.path.abspath(os.path.join(os.pardir, 'import', 'metadata'))
 
-nara_jsons = [x for x in Path(mpath).glob('**/nara_id_*.json')]
-ia_jsons = [x for x in Path(mpath).glob('**/*.json') if not x.name.startswith('nara_id_')]
+nara_jsons = [x for x in Path(metadata_path).glob('**/nara_id_*.json')]
+ia_jsons = [x for x in Path(metadata_path).glob('**/*.json') if not x.name.startswith('nara_id_')]
 
 nara_frames = []
 for j in nara_jsons:
