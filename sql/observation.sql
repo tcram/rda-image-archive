@@ -1,9 +1,12 @@
-create table observations(
-    pid binary(16),
-    otime datetime,
+create table observation 
+( 
+    /*  <ccg, 2019-06-17> */
+    page_id binary(16),
+    hour_minute datetime,
     lat float(10,6),
     lon float(10,6),
     fix bool default null, #exact location?
+    
     di    tinyint ,  #wind direction indicator (0-6)
     d     smallint,  #wind direction (1-362)
     wi    tinyint ,  #wind speed indicator (0-8)
@@ -37,4 +40,5 @@ create table observations(
     sp    tinyint ,  #swell period (0-30,99)
     sh    tinyint ,  #swell height (0-99)
     primary key (pid, otime)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) 
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
