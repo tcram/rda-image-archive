@@ -1,44 +1,48 @@
 create table observation 
 ( 
-    /*  <ccg, 2019-06-17> */
-    page_id binary(16),
-    hour_minute datetime,
-    lat float(10,6),
-    lon float(10,6),
-    fix bool default null, #exact location?
-    
-    di    tinyint ,  #wind direction indicator (0-6)
-    d     smallint,  #wind direction (1-362)
-    wi    tinyint ,  #wind speed indicator (0-8)
-    w     smallint,  #wind speed, 0.1 m/s (0-999)
-    vi    tinyint ,  #vv indicator (0-2)
-    vv    tinyint ,  #visibility (90-99)
-    ww    tinyint ,  #present weather (0-99)
-    w1    tinyint ,  #past weather (0-9)
-    slp   smallint,  #sea level pressure, 0.1 hpa (8700-10746)
-    a     tinyint ,  #characteristic of ppp (0-8)
-    ppp   smallint,  #atmospheric pressure tend., 0.1 hpa (0-510)
-    it    tinyint ,  #indicator for temperature (0-9)
-    at    smallint,  #air temperature, 0.1 degree c (-999-999)
-    wbti  tinyint ,  #indicator for wbt (0-3)
-    wbt   smallint,  #wet-bulb temperature, 0.1 degree c (-999-999)
-    dpti  tinyint ,  #indicator for dpt, (0-3)
-    dpt   smallint,  #dew-point temperature, 0.1 degree c (-999-999)
-    si    tinyint ,  #sst measurement method, (0-12)
-    sst   smallint,  #sea surface temperature, 0.1 degree c (-999-999)
-    n     tinyint ,  #total cloud amount (0-9)
-    nh    tinyint ,  #lower cloud amount (0-9)
-    cl    char(1) ,  #lower cloud type (0-a)
-    hi    tinyint ,  #h indicator (0-1)
-    h     char(1) ,  #cloud height (0-a)
-    cm    char(1) ,  #middle cloud type (0-a)
-    ch    char(1) ,  #high cloud type (0-a)
-    wd    tinyint ,  #wave direction (0-38)
-    wp    tinyint ,  #wave period (0-30,99)
-    wh    tinyint ,  #wave height (0-99)
-    sd    tinyint ,  #swell direction (0-38)
-    sp    tinyint ,  #swell period (0-30,99)
-    sh    tinyint ,  #swell height (0-99)
-    primary key (pid, otime)
+    /* TODO page_id binary(16) not null, */
+    page_id char(32) not null,
+    time_after_page_start default null comment 'Format: a non-negative time entered as "HH:MM" (or HHMMSS). Defined as the displacement in hours and minutes from the start of the parent page (explicitly from `page.ut1_start_datetime`). Note: If `page.local_start_time` of the parent page takes its default value "00:00:00", then `time_after_page_start` for an observation would be given by the local time of this observation. If `page.local_start_time` is nonzero, say, "06:00:00", then an observation made at local time "18:00:00" would have `time_after_page_start` entered as "12:00" (or 120000).',
+    primary key (page_id, time_after_page_start),
+
+    /* ship position */
+    longitude float(10,6) default null,
+    latitude float(10,6) default null,
+    location_fix_indicator bool default 0 comment 'An indicator equal to 1 if longitude and latitude are "fixed" by georeference. Else equal to 0, e.g., when location is unspecified or "dead-reckoned".',
+
+    /* ship course and speed */
+    local_course float(6,3) default null comment 'Local course is defined as the direction of movement in degrees clockwise (e.g., convert NE to 315 and NNE to 337.5) from "local north". This field should be entered verbatim, without correction for the compass type of instrument. True course thus depends on this field, the date, and the parent field `ship.compass_type_of_instrument`.',
+    local_speed float(6,3) default null comment 'Should be entered verbatim. This field depends on the parent field `ship.navigation_speed_units`.',
+
+    /* TODO Standardize indicators from Sec. 4.2.1 "Elements observed", WMO-No. 8 (2010 update). lwww.wmo.int/pages/prog/www/IMOP/CIMO-Guide.html */
+    /* atmospheric pressure indicators */
+    atmospheric_pressure_indicator bool default null,
+
+    /* temperature indicators */
+    dry_bulb_temperature_indicator bool default null,
+    wet_bulb_temperature_indicator bool default null,
+    unspecified_air_temperature_indicator bool default null,
+    sea_temperature_indicator bool default null,
+
+    /* TODO humidity indicators */
+
+    /* wind speed indicators */
+    wind_direction_indicator bool default null,
+    wind_speed_indicator bool default null,
+
+    /* TODO weather indicators */
+
+    /* cloud indicators */
+    cloud_form_indicator bool default null,
+    cloud_direction_indicator bool default null,
+    cloud_amount_indicator bool default null
+
+    /* TODO visibility indicators */
+    /* TODO precipitation indicators */
+    /* TODO ocean sea waves and swell indicators */
+
+    unique key observation_of_page (page_id, time_after_page_start),
+    foreign key (page_id) references page(page_id) on delete restrict
 ) 
 ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
