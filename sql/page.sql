@@ -1,13 +1,12 @@
 create table page /* By "page" here is meant a single scanned image of a logbook. */
 (
+    page_id char(32) primary key comment '32-char hexidecimal page UUID. Generated during image file import (by removing hyphens from 36-char UUID).',
     /* For development, I am abandoning binary representation in favor of hexidecimal representations. */
     /* TODO page_id binary(16) primary key comment '16-byte representation of 32-char hexidecimal page UUID. Generated during image file import (by removing hyphens from 36-char UUID).', */
     /* TODO page_id_hex char(32) generated always as (hex(page_id)), */
+    page_file_ext varchar(10) comment 'Image file extension, e.g., "jpg" or "JPG" but not ".jpg".',
 
-    page_id char(32) primary key '32-char hexidecimal page UUID. Generated during image file import (by removing hyphens from 36-char UUID).',
-    page_file_ext varchar(10) 'Image file extension, e.g., "jpg" or "JPG" but not ".jpg".',
-
-    log_id unsigned smallint not null,
+    log_id smallint not null,
     order_within_log int(4) not null comment 'Order of page relative to other pages in the parent logbook.', 
 
     local_start_date date default null comment 'Format: "YYYY-MM-DD", or, numerically, YYYYMMDD. Local date at page start.',
@@ -22,10 +21,26 @@ create table page /* By "page" here is meant a single scanned image of a logbook
     /* TODO page_size  */
     /* TODO page_file_format */
 
-    unique key page_of_log (log_id, order_within_log),
+    index page_of_log (log_id, order_within_log),
     foreign key (log_id) references log(log_id) on delete restrict
 ) 
 ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-insert into page (page_id, local_start_date, local_start_time, local_time_zone) values ("snarf", "1850-01-05", "00:00", "-03:30" );
-
+insert into page 
+(
+    page_id,
+    log_id,
+    order_within_log,
+    local_start_date,
+    local_start_time,
+    local_time_zone
+)
+values
+(
+    "testpage", 
+    0,
+    0, 
+    "1850-01-05", 
+    "00:00", 
+    "-03:30" 
+);

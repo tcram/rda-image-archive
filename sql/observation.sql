@@ -2,7 +2,7 @@ create table observation
 ( 
     /* TODO page_id binary(16) not null, */
     page_id char(32) not null,
-    time_after_page_start default null comment 'Format: a non-negative time entered as "HH:MM" (or HHMMSS). Defined as the displacement in hours and minutes from the start of the parent page (explicitly from `page.ut1_start_datetime`). Note: If `page.local_start_time` of the parent page takes its default value "00:00:00", then `time_after_page_start` for an observation would be given by the local time of this observation. If `page.local_start_time` is nonzero, say, "06:00:00", then an observation made at local time "18:00:00" would have `time_after_page_start` entered as "12:00" (or 120000).',
+    time_after_page_start time not null comment 'Format: a non-negative time entered as "HH:MM" (or HHMMSS). Defined as the displacement in hours and minutes from the start of the parent page (explicitly from `page.ut1_start_datetime`). Note: If `page.local_start_time` of the parent page takes its default value "00:00:00", then `time_after_page_start` for an observation would be given by the local time of this observation. If `page.local_start_time` is nonzero, say, "06:00:00", then an observation made at local time "18:00:00" would have `time_after_page_start` entered as "12:00" (or 120000).',
     primary key (page_id, time_after_page_start),
 
     /* ship position */
@@ -35,7 +35,7 @@ create table observation
     /* cloud indicators */
     cloud_form_indicator bool default null,
     cloud_direction_indicator bool default null,
-    cloud_amount_indicator bool default null
+    cloud_amount_indicator bool default null,
 
     /* TODO visibility indicators */
     /* TODO precipitation indicators */

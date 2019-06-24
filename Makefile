@@ -1,4 +1,4 @@
-MYSQL_ARGS=
+MYSQL_ARGS=--defaults-extra-file=mysql_args
 
 read:
 	mysql $(MYSQL_ARGS) images -e "drop table if exists observation"
@@ -6,11 +6,11 @@ read:
 	mysql $(MYSQL_ARGS) images -e "drop table if exists log"
 	mysql $(MYSQL_ARGS) images -e "drop table if exists ship"
 	mysql $(MYSQL_ARGS) images -e "drop table if exists archive"
-	mysql $(MYSQL_ARGS) images < sql/observation.sql
-	mysql $(MYSQL_ARGS) images < sql/page.sql
-	mysql $(MYSQL_ARGS) images < sql/logbook.sql
-	mysql $(MYSQL_ARGS) images < sql/ship.sql
 	mysql $(MYSQL_ARGS) images < sql/archive.sql
+	mysql $(MYSQL_ARGS) images < sql/ship.sql
+	mysql $(MYSQL_ARGS) images < sql/log.sql
+	mysql $(MYSQL_ARGS) images < sql/page.sql
+	mysql $(MYSQL_ARGS) images < sql/observation.sql
 access-portal/head_date.txt:
 	git log -1 --format="%ad" --date=format:"%Y-%m-%d" > "$@"
 

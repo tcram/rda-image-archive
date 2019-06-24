@@ -1,9 +1,10 @@
 create table log 
 (
-    log_id unsigned smallint primary key auto_increment,
+    log_id smallint primary key,
+    ship_id smallint not null,
+    archive_id smallint not null,
 
-    ship_id unsigned smallint not null,
-    archive_id unsigned tinyint not null,
+    name varchar(100) default null,
 
     /* Should instrumental specifications and units be updated for each logbook? */
     /* TODO create "resolution" from observations_per_page and timewindow. */
@@ -14,3 +15,19 @@ create table log
 ) 
 ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
     
+insert into log 
+(
+    log_id,
+    ship_id, 
+    archive_id, 
+    name, 
+    marine_region_description
+) 
+values 
+(
+    0,
+    0, 
+    0, 
+    "Test Log", 
+    "Pacific Ocean"
+)
