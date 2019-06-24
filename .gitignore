@@ -8,10 +8,9 @@ data
 *.pdf
 
 mysql_args
-access-portal/backend/globalVariables/passwordFile.inc
-
-access-portal/jquery.min.js
-access-portal/jquery.tablesorter.js
-access-portal/tablesorter.css
-access-portal/anchor.min.js
-access-portal/head_date.txt
+api/backend/globalVariables/passwordFile.inc
+api/jquery.min.js
+api/jquery.tablesorter.js
+api/tablesorter.css
+api/anchor.min.js
+api/head_date.txt
