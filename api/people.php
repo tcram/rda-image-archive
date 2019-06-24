@@ -1,35 +1,26 @@
 <?php
   include_once("backend/globalVariables/passwordFile.inc");
-  $query = "select distinct(person) as name from positions where cause_area = 'AI safety'";
+  $query = "select distinct(page_id) as name from page'";
   if ($stmt = $mysqli->prepare($query)) {
     $stmt->execute();
     $result = $stmt->get_result();
   }
 
-  $people = array();
+  $pages = array();
   while ($row = $result->fetch_assoc()) {
-    $people[] = $row['name'];
+    $pages[] = $row['name'];
   }
 
-  $query = "select distinct(person) as name from people";
-  if ($stmt = $mysqli->prepare($query)) {
-    $stmt->execute();
-    $result = $stmt->get_result();
-  }
-  while ($row = $result->fetch_assoc()) {
-    $people[] = $row['name'];
-  }
-  $people = array_unique($people);
-  sort($people);
+  sort($pages);
 
   print "<!DOCTYPE html>\n";
   print '<html lang="en">';
   print "<head>";
-  print "<title>List of all people</title>";
+  print "<title>List of all pages</title>";
   print "</head>";
   print "<pre>";
-  foreach ($people as $person) {
-    print '<a href="/?person=' . urlencode($person) . '">' . $person . "</a>\n";
+  foreach ($pages as $page) {
+    print '<a href="/?page=' . urlencode($page) . '">' . $page. "</a>\n";
   }
   print "</pre>";
   print "</html>";
