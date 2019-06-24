@@ -46,3 +46,43 @@ create table observation
 ) 
 ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+insert into observation
+(
+    page_id,
+    time_after_page_start,
+    longitude,
+    latitude,
+    location_fix_indicator,
+    local_course,
+    local_speed,
+    atmospheric_pressure_indicator,
+    dry_bulb_temperature_indicator,
+    wet_bulb_temperature_indicator,
+    unspecified_air_temperature_indicator,
+    sea_temperature_indicator,
+    wind_direction_indicator,
+    wind_speed_indicator,
+    cloud_form_indicator,
+    cloud_direction_indicator,
+    cloud_amount_indicator
+)
+values
+(
+    "testpage",
+    060000,
+    90.5,
+    45.5,
+    1,
+    60.8,
+    2.45,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+);
