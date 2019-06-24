@@ -1,55 +1,64 @@
 create table observation 
 ( 
-    /* TODO page_id binary(16) not null, */
-    page_id char(32) not null,
-    time_after_page_start time not null comment 'Format: a non-negative time entered as "HH:MM" (or HHMMSS). Defined as the displacement in hours and minutes from the start of the parent page (explicitly from `page.ut1_start_datetime`). Note: If `page.local_start_time` of the parent page takes its default value "00:00:00", then `time_after_page_start` for an observation would be given by the local time of this observation. If `page.local_start_time` is nonzero, say, "06:00:00", then an observation made at local time "18:00:00" would have `time_after_page_start` entered as "12:00" (or 120000).',
-    primary key (page_id, time_after_page_start),
+    /* keys */
+    image_id char(32) not null,
+    time_after_image_start time not null 
+        comment 'Format: a non-negative time entered as "HH:MM" (or HHMMSS). Defined as the displacement in hours and minutes from the start of the parent image (explicitly from `image.ut1_start_datetime`). Note: If `image.local_start_time` of the parent image takes its default value "00:00:00", then `time_after_image_start` for an observation would be given by the local time of this observation. If `image.local_start_time` is nonzero, say, "06:00:00", then an observation made at local time "18:00:00" would have `time_after_image_start` entered as "12:00" (or 120000).',
+    primary key 
+    (
+        image_id, 
+        time_after_image_start
+    ),
 
-    /* ship position */
-    longitude float(10,6) default null,
-    latitude float(10,6) default null,
-    location_fix_indicator bool default 0 comment 'An indicator equal to 1 if longitude and latitude are "fixed" by georeference. Else equal to 0, e.g., when location is unspecified or "dead-reckoned".',
+    /* recommended metadata */
 
-    /* ship course and speed */
-    local_course float(6,3) default null comment 'Local course is defined as the direction of movement in degrees clockwise (e.g., convert NE to 315 and NNE to 337.5) from "local north". This field should be entered verbatim, without correction for the compass type of instrument. True course thus depends on this field, the date, and the parent field `ship.compass_type_of_instrument`.',
-    local_speed float(6,3) default null comment 'Should be entered verbatim. This field depends on the parent field `ship.navigation_speed_units`.',
+        /* atmospheric pressure indicators */
+        atmospheric_pressure_indicator bool,
 
-    /* TODO Standardize indicators from Sec. 4.2.1 "Elements observed", WMO-No. 8 (2010 update). lwww.wmo.int/pages/prog/www/IMOP/CIMO-Guide.html */
-    /* atmospheric pressure indicators */
-    atmospheric_pressure_indicator bool default null,
+        /* temperature indicators */
+        dry_bulb_temperature_indicator bool,
+        wet_bulb_temperature_indicator bool,
+        unspecified_air_temperature_indicator bool,
+        sea_temperature_indicator bool,
 
-    /* temperature indicators */
-    dry_bulb_temperature_indicator bool default null,
-    wet_bulb_temperature_indicator bool default null,
-    unspecified_air_temperature_indicator bool default null,
-    sea_temperature_indicator bool default null,
+        /* wind speed indicators */
+        wind_direction_indicator bool,
+        wind_speed_indicator bool,
 
-    /* TODO humidity indicators */
+        /* cloud indicators */
+        cloud_form_indicator bool,
+        cloud_direction_indicator bool,
+        cloud_amount_indicator bool,
 
-    /* wind speed indicators */
-    wind_direction_indicator bool default null,
-    wind_speed_indicator bool default null,
+    /* optional metadata */
 
-    /* TODO weather indicators */
+        /* platform position */
+        longitude float(10,6),
+        latitude float(10,6),
+        location_fix_indicator bool default 0 comment 'An indicator equal to 1 if longitude and latitude are "fixed" by georeference. Else equal to 0, e.g., when location is unspecified or "dead-reckoned".',
 
-    /* cloud indicators */
-    cloud_form_indicator bool default null,
-    cloud_direction_indicator bool default null,
-    cloud_amount_indicator bool default null,
+        /* platform course and speed */
+        local_course float(6,3) comment 'Local course is defined as the direction of movement in degrees clockwise (e.g., convert NE to 315 and NNE to 337.5) from "local north". This field should be entered verbatim, without correction for the compass type of instrument. True course thus depends on this field, the date, and the parent field `platform.compass_type_of_instrument`.',
+        local_speed float(6,3) comment 'Should be entered verbatim. This field depends on the parent field `platform.navigation_speed_units`.',
 
-    /* TODO visibility indicators */
-    /* TODO precipitation indicators */
-    /* TODO ocean sea waves and swell indicators */
-
-    unique key observation_of_page (page_id, time_after_page_start),
-    foreign key (page_id) references page(page_id) on delete restrict
+    /* indices */
+    foreign key (image_id) references image(image_id) on delete restrict
 ) 
 ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+/* TODO */
+/* image_id binary(16) not null, */
+/* Standardize indicators from Sec. 4.2.1 "Elements observed", WMO-No. 8 (2010 update). lwww.wmo.int/images/prog/www/IMOP/CIMO-Guide.html */
+/* humidity indicators */
+/* weather indicators */
+/* visibility indicators */
+/* precipitation indicators */
+/* ocean sea waves and swell indicators */
+
 insert into observation
 (
-    page_id,
-    time_after_page_start,
+    image_id,
+    time_after_image_start,
     longitude,
     latitude,
     location_fix_indicator,
@@ -68,7 +77,7 @@ insert into observation
 )
 values
 (
-    "testpage",
+    "testimage",
     060000,
     90.5,
     45.5,

@@ -2,17 +2,17 @@ MYSQL_ARGS=--defaults-extra-file=mysql_args
 
 read:
 	mysql $(MYSQL_ARGS) images -e "drop table if exists observation"
-	mysql $(MYSQL_ARGS) images -e "drop table if exists page"
-	mysql $(MYSQL_ARGS) images -e "drop table if exists log"
-	mysql $(MYSQL_ARGS) images -e "drop table if exists ship"
+	mysql $(MYSQL_ARGS) images -e "drop table if exists image"
+	mysql $(MYSQL_ARGS) images -e "drop table if exists document"
+	mysql $(MYSQL_ARGS) images -e "drop table if exists platform"
 	mysql $(MYSQL_ARGS) images -e "drop table if exists archive"
 	mysql $(MYSQL_ARGS) images < sql/archive.sql
-	mysql $(MYSQL_ARGS) images < sql/ship.sql
-	mysql $(MYSQL_ARGS) images < sql/log.sql
-	mysql $(MYSQL_ARGS) images < sql/page.sql
+	mysql $(MYSQL_ARGS) images < sql/platform.sql
+	mysql $(MYSQL_ARGS) images < sql/document.sql
+	mysql $(MYSQL_ARGS) images < sql/image.sql
 	mysql $(MYSQL_ARGS) images < sql/observation.sql
 api/head_date.txt:
-	git log -1 --format="%ad" --date=format:"%Y-%m-%d" > "$@"
+	git document -1 --format="%ad" --date=format:"%Y-%m-%d" > "$@"
 
 .PHONY: fetch_tablesorter
 fetch_tablesorter:
