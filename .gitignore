@@ -1,11 +1,17 @@
-# minimal gitignore <ccg, 2019-05-29> # 
+__pycache__
+.ipynb_checkpoints
 
+data
 *.JPG
 *.jpg
 *.jp2
 *.pdf
 
 mysql_args
-data
-__pycache__
-.ipynb_checkpoints
+access-portal/backend/globalVariables/passwordFile.inc
+
+access-portal/jquery.min.js
+access-portal/jquery.tablesorter.js
+access-portal/tablesorter.css
+access-portal/anchor.min.js
+access-portal/head_date.txt
