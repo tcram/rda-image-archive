@@ -11,9 +11,9 @@ My goal in this document is to propose
 1. a data exchange format, and
 1. a procedure for updating a test database called `images`.
 
-Before going into detail, there are two preliminaries to address.
+Before going into detail, there are a few preliminaries to address.
 
-### Local Installation
+### Local installation
 
 First, if one has a local mysql installation, I suggest initializing a test database `images`.
 
@@ -41,7 +41,13 @@ First, if one has a local mysql installation, I suggest initializing a test data
    make read
    ```
 
-(I have only tested this installation on Linux.) Withstanding errors, one should have access to a local copy of the test database `images`. To see the fields implemented in the schema for `images`, it is perhaps useful to see the output of `make describe`. Printed here in gory detail, that reads:
+(I have only tested this installation on Linux.) Withstanding errors, one should have access to a local copy of the test database `images`. 
+
+### Outline of database schema
+
+Second, to get a handle on the schema designed (as of 2019-06-25) for `images`, it is perhaps useful to see the output of `make describe` (one should run this command on their own to see updates to the schema since the time of this document's writing). 
+
+Printed here in gory detail, that reads:
 
 `mysql --defaults-extra-file=mysql_args images -e "describe archive;"`
 
@@ -56,12 +62,12 @@ Field | Type | Null | Key | Default | Extra
 `api_documentation` | varchar(255) | YES |  | NULL | 
 `notes` | varchar(1000) | YES |  | NULL | 
 
-`mysql --defaults-extra-file=mysql_args images -e "describe platform;"` (truncated below ...)
+`mysql --defaults-extra-file=mysql_args images -e "describe platform;"` (truncated for space ...)
 
 Field | Type
 --- | ---
-`platform_id` (PRIMARY KEY) | smallint(6)
-`name` (NOT NULL) | varchar(255)
+`platform_id` | smallint(6)
+`name` | varchar(255)
 `compass_type_of_instrument` | enum(`gyro`,`magnetic`,`unknown`) 
 `compass_units` | enum(`degrees`,`cardinal directions`) 
 `navigation_speed_type_of_instrument` | enum(`chip log`,`patent log`,`pit log`,`electromagnetic log`,`propeller rpm`) 
@@ -138,9 +144,9 @@ Field | Type | Null | Key | Default | Extra
 `local_course` | float(6,3) | YES |  | NULL | 
 `local_speed` | float(6,3) | YES |  | NULL | 
 
-### Database ontology
+### Parent-child dependencies
 
-The required fields in the 5 tables above are based on my interpretation of the following parent-child dependencies. 
+Now, the required fields in the 5 tables above are based on my interpretation of the following parent-child dependencies. 
 
 ```
 archive   platform
@@ -179,6 +185,8 @@ Field | Comment
 `document.relative_id_item` | Names the field that serves as a document's unique identifier relative to its parent archive. E.g., `naId` for NARA ID.
 `document.relative_id_value` | Valuates the field that serves as the document's unique identifier (relative its parent archive). E.g., `17298664`, the NARA ID for the document "Idaho (BB-42) - May, 1944".
 
+### Initial database ontology
+
 The assumptions underlying the ontology so far (that is, all tables above and including the table `image`) are:
 
 - Documents produce images;
@@ -195,9 +203,9 @@ The motivations underlying the ontology so far are:
 
 I am open to feedback and criticism with respect to this ontology. 
 
-Having outlined a suggested installation, and some preliminary justification in support of dependencies chosen for the rda-image-archive's database schema, I would like now to propose a subset of fields that should be required as *minimal metadata*.
-
 ## Minimal metadata
+
+Having outlined a suggested installation, and some preliminary justification in support of dependencies chosen for the rda-image-archive's database schema, I would like now to propose a subset of fields that should be required as *minimal metadata*. We'll start with image files.
 
 ### Image files
 
@@ -227,9 +235,10 @@ Field | Comment
 
 Understandably, this requirement may be too much to ask for: `time_after_image_start` could be ill-defined, illegible, incorrect, or only available from deduction. I would appreciate feedback with respect to this level of temporal granularity for the `observation` table in the database ontology.
 
-We proceed to describe the recommended metadata.
 
 ## Recommended metadata
+
+We proceed to describe the recommended metadata, beginning from the tables `archive` and `platform` and working down the child tables.
 
 ### Archives
 
@@ -348,4 +357,5 @@ We proceed to document two (hopefully equivalent) file exchange formats:
 - a *flattened* (or *unnormalized*) `csv` format, and
 - a *normalized* `json` format.
 
-TODO 2019-06-25.
+> TODO <ccg, 2019-06-25> > 
+
