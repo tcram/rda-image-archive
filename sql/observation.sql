@@ -35,11 +35,11 @@ create table observation
         /* platform position */
         longitude float(10,6),
         latitude float(10,6),
-        location_fix_indicator bool default 0 comment 'An indicator equal to 1 if longitude and latitude are "fixed" by georeference. Else equal to 0, e.g., when location is unspecified or "dead-reckoned".',
+        location_fix_indicator bool default 0 comment 'an indicator equal to 1 if longitude and latitude are "fixed" by georeference. else equal to 0, e.g., when location is unspecified or "dead-reckoned".',
 
         /* platform course and speed */
-        local_course float(6,3) comment 'Local course is defined as the direction of movement in degrees clockwise (e.g., convert NE to 315 and NNE to 337.5) from "local north". This field should be entered verbatim, without correction for the compass type of instrument. True course thus depends on this field, the date, and the parent field `platform.compass_type_of_instrument`.',
-        local_speed float(6,3) comment 'Should be entered verbatim. This field depends on the parent field `platform.navigation_speed_units`.',
+        local_course float(6,3) comment 'local course is defined as the direction of movement in degrees clockwise (e.g., convert ne to 315 and nne to 337.5) from "local north". this field should be entered verbatim, without correction for the compass type of instrument. true course thus depends on this field, the date, and the parent field `platform.compass_type_of_instrument`.',
+        local_speed float(6,3) comment 'should be entered verbatim. this field depends on the parent field `platform.navigation_speed_units`.',
 
     /* indices */
     foreign key (image_id) references image(image_id) on delete restrict

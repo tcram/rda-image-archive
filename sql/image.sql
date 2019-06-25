@@ -12,10 +12,10 @@ create table image /* By "image" here is meant exactly one binary file obtained 
     file_size smallint,
 
     /* optional metadata */
-    location_description varchar(255) comment 'Colloquial name or description of location. Should be entered verbatim.',
-    local_start_date date comment 'Format: "YYYY-MM-DD", or, numerically, YYYYMMDD. Local date at image start.',
-    local_start_time time default "00:00:00" comment 'Format: "HH:MM:SS", or, numerically, HHMMSS. Local time at image start. Should be entered as a postive value between "00:00" (or 000000) and "23:59" (or 235900).',
-    local_time_zone time comment 'Format: should be entered as a signed value between "-12:00" (or -120000) and "12:00" (or 120000). The local timezone at image start is defined to be the (signed) hours and minutes from UT1 solar time to local time. For example, in timezone -03:30, the local time 15:00 refers to the UT1 time 18:30.',
+    location_description varchar(255) comment 'colloquial name or description of location. should be entered verbatim.',
+    local_start_date date comment 'format: "yyyy-mm-dd", or, numerically, yyyymmdd. local date at image start.',
+    local_start_time time default "00:00:00" comment 'format: "hh:mm:ss", or, numerically, hhmmss. local time at image start. should be entered as a postive value between "00:00" (or 000000) and "23:59" (or 235900).',
+    local_time_zone time comment 'format: should be entered as a signed value between "-12:00" (or -120000) and "12:00" (or 120000). the local timezone at image start is defined to be the (signed) hours and minutes from ut1 solar time to local time. for example, in timezone -03:30, the local time 15:00 refers to the ut1 time 18:30.',
 
     /* virtual metadata */
     ut1_start_datetime datetime generated always as 
