@@ -14,6 +14,14 @@ read:
 api/head_date.txt:
 	git document -1 --format="%ad" --date=format:"%Y-%m-%d" > "$@"
 
+.PHONY: describe
+describe:
+	mysql $(MYSQL_ARGS) images -e "describe archive;"
+	mysql $(MYSQL_ARGS) images -e "describe platform;"
+	mysql $(MYSQL_ARGS) images -e "describe document;"
+	mysql $(MYSQL_ARGS) images -e "describe image;"
+	mysql $(MYSQL_ARGS) images -e "describe observation;"
+
 .PHONY: fetch_tablesorter
 fetch_tablesorter:
 	curl -Lo api/jquery.min.js \
