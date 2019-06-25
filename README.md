@@ -15,19 +15,36 @@ This repository is for the development of a digital image archive (for historica
 - `export/` is for deploying images
 - `api/` is for code supporting to support an API
 
-## installation
+## database setup
 
-Adapted from Issa Rice:
+(This guide is adapted from Issa Rice.)
 
-> First, clone the repo and set up the database:
-> 
-> ```bash
-> git clone https://github.com/ncar/rda-image-archive.git
-> cd rda-image-archive 
-> mysql -e "create database images"
-> make read  # read in data from sql/
-> ```
-> 
+First, clone the repo and create the `images` database:
+
+```bash
+git clone https://github.com/ncar/rda-image-archive.git
+cd rda-image-archive 
+mysql -e "create database images"
+```
+
+Then create a configuration file `mysql_args` 
+```
+vi mysql_args
+```
+with three lines:
+```
+[client]
+user=<my_user>
+password=<my_password>
+```
+
+(These will be passed as arguments to 'mysql', see the `Makefile`.) Now make the database.
+```
+make read
+```
+
+### php installation
+
 > Now set up the password file to allow PHP to document in to the database:
 > 
 > ```bash
