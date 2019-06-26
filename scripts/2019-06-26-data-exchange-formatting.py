@@ -122,6 +122,7 @@ df_images = df_images.reindex(columns = df_images.columns.tolist() +
                 'archive.host_country'])
 df_images.rename({"absolute_path":"image.staging_path", 
                   "mime_type":"image.media_subtype", 
-                  "size_in_bytes":"image.file_size"}, axis='columns'
-            ).to_csv(
-            os.path.join(git_repo_abs_dir(), "stage/flattened_metadata.csv"), index_label='image.image_id')
+                  "size_in_bytes":"image.file_size"}, axis='columns').to_csv(
+                      os.path.join(git_repo_abs_dir(), 
+                      "stage/flattened_metadata.csv"), 
+                      index_label='image.image_id')
