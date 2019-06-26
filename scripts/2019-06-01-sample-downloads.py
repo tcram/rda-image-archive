@@ -1,3 +1,5 @@
+# TODO update metadata directory hierarchy for staging <ccg, 2019-06-26>
+
 import pandas as pd
 import json
 import random

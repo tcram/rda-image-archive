@@ -50,3 +50,8 @@ def assign_uuids(iterator):
         page_ext = os.path.splitext(page)[1]
         assignments.extend((page, (sequential_uuid(), page_ext)))
     return assignments
+
+# TODO
+# {sequential_uuid().hex : [str(image), magic.from_file(str(image), mime=True), os.path.getsize(str(image))] for image in find_images(os.path.join(git_repo_abs_dir(), "stage"))}
+# DataFrame.from_dict(d, orient='index', columns=['file_path', 'mime_type', 'file_size'])
+# df[df.mime_type.str.startswith("image")]
