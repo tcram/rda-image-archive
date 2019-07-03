@@ -9,7 +9,7 @@ import glob
 import subprocess
 
 # Disk with original images
-image_source='/Volumes/Images/Catherine_Ross_DWR/1903A/DWR_1903_10.pdf'
+image_source='/glade/scratch/brohan/Image_disc_copy//Catherine_Ross_DWR/1903A/DWR_1903_10.pdf'
 # Take the first n
 n_images = 10
 

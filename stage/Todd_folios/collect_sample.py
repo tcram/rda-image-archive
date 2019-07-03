@@ -9,7 +9,7 @@ import glob
 from shutil import copy
 
 # Disk with original images
-image_source='/Volumes/Images/SA_Weather_folios'
+image_source='/glade/scratch/brohan/Image_disc_copy/SA_Weather_folios'
 # Selected subdirs
 source_dirs = ('1883',
                '1933/1933 D (Met Data)')

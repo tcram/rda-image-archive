@@ -9,7 +9,7 @@ import glob
 from shutil import copy
 
 # Disk with original images
-image_source='/Volumes/Images/Nick_images/Scott Polar Research Institute'
+image_source='/glade/scratch/brohan/Image_disc_copy/Nick_images/Scott Polar Research Institute'
 # Selected subdirs
 source_dirs = ('MS_74_SL','MS_548_8_2_SL')
 # Take the first n

@@ -9,7 +9,7 @@ import glob
 from shutil import copy
 
 # Disk with original images
-image_source='/Volumes/Images/Indian_Daily_Weather_Reports_NOAA'
+image_source='/glade/scratch/brohan/Image_disc_copy/Indian_Daily_Weather_Reports_NOAA'
 # Selected subdirs
 source_dirs = ('1892-07-01_1892-12-31',
                '1931-01-01_1931-06-30')

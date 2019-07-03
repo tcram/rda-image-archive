@@ -9,7 +9,7 @@ import glob
 from shutil import copy
 
 # Disk with original images
-image_source='/Volumes/Images/Weather_Detective_images'
+image_source='/glade/scratch/brohan/Image_disc_copy/Weather_Detective_images'
 # Selected subdir
 source_dir = 'January_1893'
 # Take the first n
