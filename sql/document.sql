@@ -12,11 +12,12 @@ create table document
     end_date date not null,
 
     /* recommended metadata */
+    contact_person varchar(255) null comment 'E-mail address of responsible human, usually the data provider.',
     standardized_region_list set('africa' , 'antarctica' , 'arabian_sea' , 'aral_sea' , 'arctic_ocean' , 'asia' , 'atlantic_arctic_ocean' , 'atlantic_ocean' , 'australia' , 'baltic_sea' , 'bering_sea' , 'bering_strait' , 'black_sea' , 'canadian_archipelago' , 'caribbean_sea' , 'caspian_sea' , 'central_america' , 'chukchi_sea' , 'davis_strait' , 'denmark_strait' , 'east_china_sea' , 'english_channel' , 'eurasia' , 'europe' , 'faroe_scotland_channel' , 'great_lakes' , 'greenland' , 'gulf_of_alaska' , 'gulf_of_mexico' , 'hudson_bay' , 'iceland_faroe_channel' , 'indian_ocean' , 'indian_pacific_ocean' , 'indonesian_throughflow' , 'indo_pacific_ocean' , 'irish_sea' , 'lake_baykal' , 'lake_chad' , 'lake_malawi' , 'lake_tanganyika' , 'lake_victoria' , 'mediterranean_sea' , 'mozambique_channel' , 'north_america' , 'north_sea' , 'norwegian_sea' , 'pacific_equatorial_undercurrent' , 'pacific_ocean' , 'persian_gulf' , 'red_sea' , 'ross_sea' , 'sea_of_japan' , 'sea_of_okhotsk' , 'south_america' , 'south_china_sea' , 'southern_ocean' , 'taiwan_luzon_straits' , 'weddell_sea' , 'windward_passage' , 'yellow_sea') 
     comment 'See http://cfconventions.org/Data/standardized-region-list',
-    is_instance_of varchar(255) null comment 'RN logbook, UK Daily Weather Report, Todd Folio, etc.',
+    type_of_record varchar(255) null comment 'RN logbook, UK Daily Weather Report, Todd Folio, etc.',
     rights_statement varchar(255) null comment 'A statement about the intellectual property rights (IPR) held in or over a Resource, a legal document giving official permission to do something with a resource, or a statement about access rights.',
-    accession_to_archive_date date null,
+    /* accession_to_archive_date date null, */
 
     /* optional metadata */
     colloquial_region_list varchar(1000) null comment 'Comma separated list of colloquial marine region names. Can include seas, sandbanks, seamounts, ridges, bays, sampling stations, or ports.',
@@ -44,9 +45,8 @@ insert into document
     start_date,
     end_date,
     standardized_region_list,
-    is_instance_of_document_type,
-    rights_statement,
-    accession_to_archive_date
+    type_of_record,
+    rights_statement
 ) 
 values 
 (
@@ -59,6 +59,5 @@ values
     20190501,
     "norwegian_sea",
     "Ship logbook",
-    "CC0",
-    20000101
+    "CC0"
 )

@@ -7,9 +7,6 @@ create table archive
     name varchar(100) not null comment 'Archive responsible for "fullest descriptive metadata" of child records, e.g., "The National Archives". Note that the archive could be a publishing company.',
     host_country char(3) not null comment 'Host country of archive. Format: ISO 3166-1 3-letter country code, e.g., "GBR".',
 
-    /* recommended metadata */
-    contact_person varchar(255) null comment 'E-mail address of responsible human, usually the data provider.',
-
     /* optional metadata */
     search_url varchar(255) comment 'Link to advanced search provided by archive, e.g., "https://discovery.nationalarchives.gov.uk/advanced-search"',
     search_documentation varchar(255) comment 'Link to documentation for advanced search, e.g., "http://www.nationalarchives.gov.uk/help-with-your-research/discovery-help/sorting-and-filtering-your-search-results/"',
@@ -24,13 +21,11 @@ insert into archive
 (
     archive_id,
     name,
-    host_country,
-    contact_person
+    host_country
 )
 values
 (
     0,
     "Archive",
-    "USA",
-    "colton.grainger@colorado.edu"
+    "USA"
 );
