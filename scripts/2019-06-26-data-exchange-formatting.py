@@ -108,21 +108,21 @@ def frame_from_uuids_below(relative_path):
             columns=['absolute_path', 'mime_type', 'size_in_bytes']) 
 
 #  fakesection: imperatives # 
+
 write_uuids_below("stage")
 df = frame_from_uuids_below("stage")
 df_images = df[df.mime_type.str.startswith("image")]
 df_images = df_images.reindex(columns = df_images.columns.tolist() +
-                ['image.relative_order',
-                'document.relative_id_item',
-                'document.relative_id_value',
-                'document.start_date',
-                'document.end_date',
-                'platform.name',
-                'archive.name',
-                'archive.host_country'])
-df_images.rename({"absolute_path":"image.staging_path", 
-                  "mime_type":"image.media_subtype", 
-                  "size_in_bytes":"image.file_size"}, axis='columns').to_csv(
-                      os.path.join(git_repo_abs_dir(), 
-                      "stage/flattened_metadata.csv"), 
+                                        ['image.relative_order',
+                                        'document.relative_id_item',
+                                        'document.relative_id_value',
+                                        'document.start_date',
+                                        'document.end_date',
+                                        'platform.name',
+                                        'archive.name',
+                                        'archive.host_country'])
+df_images = df_images.rename({"absolute_path":"image.staging_path", 
+                              "mime_type":"image.media_subtype", 
+                              "size_in_bytes":"image.file_size"}, axis='columns')
+df_images.to_csv(os.path.join(git_repo_abs_dir(), "stage/flattened_metadata.csv"), 
                       index_label='image.image_id')
