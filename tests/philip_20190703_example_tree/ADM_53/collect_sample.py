@@ -9,7 +9,7 @@ import glob
 from shutil import copy
 
 # Disk with original images
-image_source='/Volumes/Images/ADM_disc_7'
+image_source='/glade/scratch/brohan/Image_disc_copy/ADM_disc_7'
 # Selected subdirs
 source_dirs = ('ADM 53-68964','ADM 53-74447')
 # Take the first n

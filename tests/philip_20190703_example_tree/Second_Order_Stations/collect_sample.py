@@ -9,7 +9,7 @@ import glob
 from shutil import copy
 
 # Disk with original images
-image_source='/Users/philip/Projects/SSO-Textract/images'
+image_source='/glade/u/home/brohan/Projects/SSO-Textract/images'
 # Selected subdirs
 source_dirs = ['1916']
 
