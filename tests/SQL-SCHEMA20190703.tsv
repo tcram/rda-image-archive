@@ -1,42 +1,33 @@
-mysql --defaults-extra-file=mysql_args images -e "describe archive;"
 Field	Type	Null	Key	Default	Extra
-archive_id	smallint(6)	NO	PRI	NULL	
-name	varchar(100)	NO		NULL	
-host_country	char(3)	NO		NULL	
-search_url	varchar(255)	YES		NULL	
-search_documentation	varchar(255)	YES		NULL	
-api_url	varchar(255)	YES		NULL	
-api_documentation	varchar(255)	YES		NULL	
-notes	varchar(1000)	YES		NULL	
-mysql --defaults-extra-file=mysql_args images -e "describe platform;"
-Field	Type	Null	Key	Default	Extra
-platform_id	smallint(6)	NO	PRI	NULL	
-name	varchar(255)	NO		NULL	
-mysql --defaults-extra-file=mysql_args images -e "describe document;"
-Field	Type	Null	Key	Default	Extra
-document_id	smallint(6)	NO	PRI	NULL	
-platform_id	smallint(6)	NO	MUL	NULL	
-archive_id	smallint(6)	NO	MUL	NULL	
-id_within_archive	varchar(255)	NO		NULL	
-id_within_archive_type	varchar(255)	NO		NULL	
-start_date	date	NO		NULL	
-end_date	date	NO		NULL	
-contact_person	varchar(255)	YES		NULL	
-standardized_region_list	set('africa','antarctica','arabian_sea','aral_sea','arctic_ocean','asia','atlantic_arctic_ocean','atlantic_ocean','australia','baltic_sea','bering_sea','bering_strait','black_sea','canadian_archipelago','caribbean_sea','caspian_sea','central_america','chukchi_sea','davis_strait','denmark_strait','east_china_sea','english_channel','eurasia','europe','faroe_scotland_channel','great_lakes','greenland','gulf_of_alaska','gulf_of_mexico','hudson_bay','iceland_faroe_channel','indian_ocean','indian_pacific_ocean','indonesian_throughflow','indo_pacific_ocean','irish_sea','lake_baykal','lake_chad','lake_malawi','lake_tanganyika','lake_victoria','mediterranean_sea','mozambique_channel','north_america','north_sea','norwegian_sea','pacific_equatorial_undercurrent','pacific_ocean','persian_gulf','red_sea','ross_sea','sea_of_japan','sea_of_okhotsk','south_america','south_china_sea','southern_ocean','taiwan_luzon_straits','weddell_sea','windward_passage','yellow_sea')	YES		NULL	
-type_of_record	varchar(255)	YES		NULL	
-rights_statement	varchar(255)	YES		NULL	
-colloquial_region_list	varchar(1000)	YES		NULL	
-notes	varchar(1000)	YES		NULL	
-mysql --defaults-extra-file=mysql_args images -e "describe image;"
-Field	Type	Null	Key	Default	Extra
-image_id	char(32)	NO	PRI	NULL	
-document_id	smallint(6)	NO	MUL	NULL	
-relative_order	int(4)	NO		NULL	
-media_type	enum('image/bmp','image/gif','image/jp2','image/jpeg','image/png','image/tiff')	NO		NULL	
-filesize	smallint(6)	YES		NULL	
-mysql --defaults-extra-file=mysql_args images -e "describe observation;"
-Field	Type	Null	Key	Default	Extra
-observation_id	int(11)	NO	PRI	NULL	auto_increment
-image_id	char(32)	NO	MUL	NULL	
-is_cited_by_dataset_id	char(255)	NO		NULL	
-is_cited_by_dataset_id_type	char(32)	NO		NULL	
+archive.archive_id	smallint(6)	NO	PRI	NULL	
+archive.name	varchar(100)	NO		NULL	
+archive.host_country	char(3)	NO		NULL	
+archive.search_url	varchar(255)	YES		NULL	
+archive.search_documentation	varchar(255)	YES		NULL	
+archive.api_url	varchar(255)	YES		NULL	
+archive.api_documentation	varchar(255)	YES		NULL	
+archive.notes	varchar(1000)	YES		NULL	
+platform.platform_id	smallint(6)	NO	PRI	NULL	
+platform.name	varchar(255)	NO		NULL	
+document.document_id	smallint(6)	NO	PRI	NULL	
+document.platform_id	smallint(6)	NO	MUL	NULL	
+document.archive_id	smallint(6)	NO	MUL	NULL	
+document.id_within_archive	varchar(255)	NO		NULL	
+document.id_within_archive_type	varchar(255)	NO		NULL	
+document.start_date	date	NO		NULL	
+document.end_date	date	NO		NULL	
+document.contact_person	varchar(255)	YES		NULL	
+document.standardized_region_list	set('africa','antarctica','arabian_sea','aral_sea','arctic_ocean','asia','atlantic_arctic_ocean','atlantic_ocean','australia','baltic_sea','bering_sea','bering_strait','black_sea','canadian_archipelago','caribbean_sea','caspian_sea','central_america','chukchi_sea','davis_strait','denmark_strait','east_china_sea','english_channel','eurasia','europe','faroe_scotland_channel','great_lakes','greenland','gulf_of_alaska','gulf_of_mexico','hudson_bay','iceland_faroe_channel','indian_ocean','indian_pacific_ocean','indonesian_throughflow','indo_pacific_ocean','irish_sea','lake_baykal','lake_chad','lake_malawi','lake_tanganyika','lake_victoria','mediterranean_sea','mozambique_channel','north_america','north_sea','norwegian_sea','pacific_equatorial_undercurrent','pacific_ocean','persian_gulf','red_sea','ross_sea','sea_of_japan','sea_of_okhotsk','south_america','south_china_sea','southern_ocean','taiwan_luzon_straits','weddell_sea','windward_passage','yellow_sea')	YES		NULL	
+document.type_of_record	varchar(255)	YES		NULL	
+document.rights_statement	varchar(255)	YES		NULL	
+document.colloquial_region_list	varchar(1000)	YES		NULL	
+document.notes	varchar(1000)	YES		NULL	
+image.image_id	char(32)	NO	PRI	NULL	
+image.document_id	smallint(6)	NO	MUL	NULL	
+image.relative_order	int(4)	NO		NULL	
+image.media_type	enum('image/bmp','image/gif','image/jp2','image/jpeg','image/png','image/tiff')	NO		NULL	
+image.filesize	smallint(6)	YES		NULL	
+observation.observation_id	int(11)	NO	PRI	NULL	auto_increment
+observation.image_id	char(32)	NO	MUL	NULL	
+observation.is_cited_by_dataset_id	char(255)	NO		NULL	
+observation.is_cited_by_dataset_id_type	char(32)	NO		NULL	
