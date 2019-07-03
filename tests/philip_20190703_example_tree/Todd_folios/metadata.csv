@@ -1,0 +1,13 @@
+archive.name, "Australian Bureau of meteorology, Adelaide"
+archive.host_country, Australia
+archive.notes, "Imaged by the Todd folios project"
+platform.name, Various
+document.contact_person, Mac Benoy <mac.benoy@bom.gov.au>
+document.id_within_archive, NA
+document.id_within_archive_type, NA
+document.is_instance_of_a, Todd folio
+document.standardized_region_list, "australia,global ocean"
+document.start_date, NA
+document.end_date, NA
+document.rights_statement, CC-BY
+document.notes,https://en.wikipedia.org/wiki/Todd_Weather_Folios
