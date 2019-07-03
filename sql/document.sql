@@ -6,18 +6,21 @@ create table document
     archive_id smallint not null,
 
     /* required metadata */
+    id_within_archive varchar(255) not null,
+    id_within_archive_type varchar(255) not null comment 'NARA ID, ARK, ISBN, DOI, etc. Refer to DataCite Metadata Schema 4.2 relatedIdentifierType.',
     start_date date not null,
     end_date date not null,
 
-    relative_id_item varchar(255) not null,
-    relative_id_value varchar(255) not null,
-
     /* recommended metadata */
-    marine_region_description varchar(1000) null comment 'Comma separated list of colloquial marine region names. Can include seas, sandbanks, seamounts, ridges, bays, sampling stations, or ports.',
-    create_date date null,
+    standardized_region_list set('africa' , 'antarctica' , 'arabian_sea' , 'aral_sea' , 'arctic_ocean' , 'asia' , 'atlantic_arctic_ocean' , 'atlantic_ocean' , 'australia' , 'baltic_sea' , 'bering_sea' , 'bering_strait' , 'black_sea' , 'canadian_archipelago' , 'caribbean_sea' , 'caspian_sea' , 'central_america' , 'chukchi_sea' , 'davis_strait' , 'denmark_strait' , 'east_china_sea' , 'english_channel' , 'eurasia' , 'europe' , 'faroe_scotland_channel' , 'great_lakes' , 'greenland' , 'gulf_of_alaska' , 'gulf_of_mexico' , 'hudson_bay' , 'iceland_faroe_channel' , 'indian_ocean' , 'indian_pacific_ocean' , 'indonesian_throughflow' , 'indo_pacific_ocean' , 'irish_sea' , 'lake_baykal' , 'lake_chad' , 'lake_malawi' , 'lake_tanganyika' , 'lake_victoria' , 'mediterranean_sea' , 'mozambique_channel' , 'north_america' , 'north_sea' , 'norwegian_sea' , 'pacific_equatorial_undercurrent' , 'pacific_ocean' , 'persian_gulf' , 'red_sea' , 'ross_sea' , 'sea_of_japan' , 'sea_of_okhotsk' , 'south_america' , 'south_china_sea' , 'southern_ocean' , 'taiwan_luzon_straits' , 'weddell_sea' , 'windward_passage' , 'yellow_sea') 
+    comment 'See http://cfconventions.org/Data/standardized-region-list',
+    is_instance_of varchar(255) null comment 'RN logbook, UK Daily Weather Report, Todd Folio, etc.',
+    rights_statement varchar(255) null comment 'A statement about the intellectual property rights (IPR) held in or over a Resource, a legal document giving official permission to do something with a resource, or a statement about access rights.',
+    accession_to_archive_date date null,
 
-    relative_parent_item varchar(255) null,
-    relative_parent_value varchar(255) null,
+    /* optional metadata */
+    colloquial_region_list varchar(1000) null comment 'Comma separated list of colloquial marine region names. Can include seas, sandbanks, seamounts, ridges, bays, sampling stations, or ports.',
+    notes varchar(1000) comment 'Free text',
 
     /* indices */
     foreign key (platform_id) references platform(platform_id) on delete restrict,
@@ -36,20 +39,26 @@ insert into document
     document_id,
     platform_id, 
     archive_id, 
+    id_within_archive,
+    id_within_archive_type,
     start_date,
     end_date,
-    relative_id_item,
-    relative_id_value,
-    marine_region_description
+    standardized_region_list,
+    is_instance_of_document_type,
+    rights_statement,
+    accession_to_archive_date
 ) 
 values 
 (
     0,
     0, 
     0, 
+    "nara_id",
+    122179482,
     20190101,
     20190501,
-    "nara_id",
-    "122179482",
-    "North Pacific"
+    "norwegian_sea",
+    "Ship logbook",
+    "CC0",
+    20000101
 )

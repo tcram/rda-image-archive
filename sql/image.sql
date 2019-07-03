@@ -6,13 +6,10 @@ create table image /* By "image" here is meant exactly one binary file obtained 
 
     /* required metadata */
     relative_order int(4) not null comment 'Format: 0000--9999. Describes the order of an image relative to other images in a given document.', 
-    media_subtype enum('bmp', 'gif', 'jp2', 'jpeg', 'png', 'tiff') not null,
-
-    /* recommended metadata */
-    file_size smallint,
+    media_type enum('image/bmp', 'image/gif', 'image/jp2', 'image/jpeg', 'image/png', 'image/tiff') not null,
+    filesize smallint,
 
     /* optional metadata */
-    location_description varchar(255) comment 'colloquial name or description of location. should be entered verbatim.',
     local_start_date date comment 'format: "yyyy-mm-dd", or, numerically, yyyymmdd. local date at image start.',
     local_start_time time default "00:00:00" comment 'format: "hh:mm:ss", or, numerically, hhmmss. local time at image start. should be entered as a postive value between "00:00" (or 000000) and "23:59" (or 235900).',
     local_time_zone time comment 'format: should be entered as a signed value between "-12:00" (or -120000) and "12:00" (or 120000). the local timezone at image start is defined to be the (signed) hours and minutes from ut1 solar time to local time. for example, in timezone -03:30, the local time 15:00 refers to the ut1 time 18:30.',
@@ -23,11 +20,6 @@ create table image /* By "image" here is meant exactly one binary file obtained 
             date_sub(local_start_date, interval local_time_zone hour_second)
         ) 
         comment 'UT1 datetime at image start.',
-    mime_type varchar(10) generated always as 
-        (
-            concat_ws('/', "image", media_subtype)
-        )
-        comment 'Describes the media type (formerly known as MIME type). See https://www.iana.org/assignments/media-types/media-types.xhtml',
 
     /* indices */
     index image_of_document (document_id, relative_order),
@@ -41,20 +33,16 @@ insert into image
     image_id,
     document_id,
     relative_order,
-    media_subtype,
-    local_start_date,
-    local_start_time,
-    local_time_zone
+    media_type,
+    filesize
 )
 values
 (
     "testimage", 
     0,
     0, 
-    "jpeg",
-    "1850-01-05", 
-    "00:00", 
-    "-03:30" 
+    "image/jpeg",
+    32718
 );
 
 /* TODO */

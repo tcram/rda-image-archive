@@ -1,0 +1,3 @@
+archive.name, archive.host_country, archive.contact_person, archive.notes, platform.name, document.id_within_archive, document.id_within_archive_type, document.is_instance_of_a, document.accession_to_archive_date, document.standardized_region_list, document.start_date, document.end_date, document.rights_statement, document.notes
+National Archives and Records Administration, USA, ,"Provides an API","Rough Log of USCG Storis, 09/06/1957 - 09/30/1957",10675400,naID,Navy Deck Log (NDL), 20160819, ,19570906, 19570930, Public Domain, ,
+
