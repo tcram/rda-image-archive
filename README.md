@@ -37,11 +37,12 @@ Before going into detail, there are a few preliminaries to address.
 
 ### Local installation
 
-First, if one has a local mysql installation, I suggest initializing a test database `images`.
+First, if one has a local mysql installation, I suggest initializing a test database `images`. 
 
 1. Clone the repository and create a new database.
    ```bash
-   git clone https://github.com/ncar/rda-image-archive.git
+   git clone https://github.com/coltongrainger/rda-image-archive.git 
+   # option to pull from the master: sub `ncar` for `coltongrainger`
    cd rda-image-archive 
    mysql -e "create database images"
    ```
