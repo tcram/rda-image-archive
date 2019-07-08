@@ -148,13 +148,18 @@ def path_hierarchy(path):
             raise
         mime_type = magic.from_file(path, mime=True)
         hierarchy['type'] = mime_type
-        hierarchy['size'] = os.path.getsize(path)
         if mime_type == "text/plain":
-            with open(path, mode='r') as f:
-                metadata_csv = csv.reader(f)
-                metadata_dict = {rows[0]:rows[1] for rows in metadata_csv if any(rows)} 
-                hierarchy['metadata'] = metadata_dict
-            
+            try:
+                with open(path, newline='') as csvfile:
+                    dialect = csv.Sniffer().sniff(csvfile.read(1024))
+                    csvfile.seek(0)
+                    reader = csv.reader(csvfile, dialect)
+                    metadata = {rows[0]:rows[1] for rows in reader if any(rows)} 
+                    hierarchy['metadata'] = metadata
+            except Exception as e:
+                pass
+        hierarchy['size'] = os.path.getsize(path)
+
     return hierarchy
 
 if __name__ == '__main__':
