@@ -20,7 +20,7 @@ create table document
     /* accession_to_archive_date date null, */
 
     /* optional metadata */
-    colloquial_region_list varchar(1000) null comment 'Comma separated list of colloquial marine region names. Can include seas, sandbanks, seamounts, ridges, bays, sampling stations, or ports.',
+    colloquial_region_list varchar(1000) null comment 'Comma separated list of colloquial region names. Can include countries, cities, ports, sampling stations, etc.',
     notes varchar(1000) comment 'Free text',
 
     /* indices */
@@ -57,7 +57,7 @@ values
     122179482,
     20190101,
     20190501,
-    "norwegian_sea",
+    "south_atlantic",
     "Ship logbook",
     "CC0"
 )

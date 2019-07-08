@@ -60,12 +60,16 @@ First, if one has a local mysql installation, I suggest initializing a test data
 
 1. Now make the database.
    ```
-   make read
+   make
    ```
 
 (I have only tested this installation on Linux.) Withstanding errors, one should have access to a local copy of the test database `images`. 
 
-### Outline of database schema
+### Most recent database schema
+
+One may checkout the repository at a certain date, then run `make describe` for the revised schema at that date. The `Makefile` will be configured correctly for commits after 2019-06-25, but `make describe` is only guaranteed to return sensible output after 2019-07-08.
+
+### Outline of database schema (as of 2019-06-25)
 
 Second, to get a handle on the schema designed (as of 2019-06-25) for `images`, it is perhaps useful to see the output of `make describe` (one should run this command on their own to see updates to the schema since the time of this document's writing). 
 
