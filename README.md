@@ -83,6 +83,71 @@ First, if one has a local mysql installation, I suggest initializing a test data
 
 One may checkout the repository at a certain date, then run `make describe` for the revised schema at that date. The `Makefile` will be configured correctly for commits after 2019-06-25, but `make describe` is only guaranteed to return sensible output after 2019-07-08.
 
+### Outline of database schema (as of 2019-07-05)
+
+We expect (at minimum) the following fields to be defined (or NULL, where appropriate) in order to ingest images into the `images` database. 
+
+- `archive.host_country`
+- `document.contact_person`
+- `archive.notes`
+- `platform.name`
+- `document.id_within_archive`
+- `document.id_within_archive_type`
+- `document.record_type`
+- `document.standardized_region_list`
+- `document.colloquial_region_list`
+- `document.start_date`
+- `document.end_date`
+- `document.rights_statement`
+- `document.notes`
+
+Run `make describe` for a fuller description of each field. As of 2019-07-08, the console output reads:
+
+```console
+$ mysql --defaults-extra-file=$ mysql_args images -e "describe archive;"
+Field   Type    Null    Key     Default Extra
+archive_id      smallint(6)     NO      PRI     NULL
+name    varchar(100)    NO              NULL
+host_country    char(3) NO              NULL
+search_url      varchar(255)    YES             NULL
+search_documentation    varchar(255)    YES             NULL
+api_url varchar(255)    YES             NULL
+api_documentation       varchar(255)    YES             NULL
+notes   varchar(1000)   YES             NULL
+$ mysql --defaults-extra-file=$ mysql_args images -e "describe platform;"
+Field   Type    Null    Key     Default Extra
+platform_id     smallint(6)     NO      PRI     NULL
+name    varchar(255)    NO              NULL
+$ mysql --defaults-extra-file=$ mysql_args images -e "describe document;"
+Field   Type    Null    Key     Default Extra
+document_id     smallint(6)     NO      PRI     NULL
+platform_id     smallint(6)     NO      MUL     NULL
+archive_id      smallint(6)     NO      MUL     NULL
+id_within_archive       varchar(255)    NO              NULL
+id_within_archive_type  varchar(255)    NO              NULL
+start_date      date    NO              NULL
+end_date        date    NO              NULL
+contact_person  varchar(255)    YES             NULL
+standardized_region_list        set('north_atlantic','south_atlantic','north_pacific','south_pacific','north_indian','south_indian','antarctic','arctic','mediterranean','black_sea','baltic_sea','persian_gulf','red_sea')     YES             NULL
+type_of_record  varchar(255)    YES             NULL
+rights_statement        varchar(255)    YES             NULL
+colloquial_region_list  varchar(1000)   YES             NULL
+notes   varchar(1000)   YES             NULL
+$ mysql --defaults-extra-file=$ mysql_args images -e "describe image;"
+Field   Type    Null    Key     Default Extra
+image_id        char(32)        NO      PRI     NULL
+document_id     smallint(6)     NO      MUL     NULL
+relative_order  int(4)  NO              NULL
+media_type      enum('image/bmp','image/gif','image/jp2','image/jpeg','image/png','image/tiff') NO              NULL
+filesize        smallint(6)     YES             NULL
+$ mysql --defaults-extra-file=$ mysql_args images -e "describe observation;"
+Field   Type    Null    Key     Default Extra
+observation_id  int(11) NO      PRI     NULL    auto_increment
+image_id        char(32)        NO      MUL     NULL
+is_cited_by_dataset_id  char(255)       NO              NULL
+is_cited_by_dataset_id_type     char(32)        NO              NULL
+```
+
 ### Outline of database schema (as of 2019-06-25)
 
 Second, to get a handle on the schema designed (as of 2019-06-25) for `images`, it is perhaps useful to see the output of `make describe` (one should run this command on their own to see updates to the schema since the time of this document's writing). 
