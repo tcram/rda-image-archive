@@ -35,6 +35,19 @@ This part of the README aims to propose
 
 Before going into detail, there are a few preliminaries to address.
 
+### Dependencies
+
+- to create a new database
+    - GNU Make <https://www.gnu.org/software/make/>
+    - MySQL server <https://dev.mysql.com/downloads/mysql/5.7.html> (or any version > 5.7)
+
+- to run the scripts
+    - Python 3 <https://www.python.org/download/releases/3.0/>
+    - python-magic <https://pypi.org/project/python-magic/>
+    - pandas <https://pandas.pydata.org/>
+    - TODO list other required python libraries <ccg, 2019-07-08>
+    
+
 ### Local installation
 
 First, if one has a local mysql installation, I suggest initializing a test database `images`. 
