@@ -110,14 +110,18 @@ def extract_and_unnormalize(path, **kwargs):
     catalog = catalog_content_under(path)
     metadata = flatten_list(unnormalize_catalog(catalog))
     output = kwargs.get('output', None)
-    if output == 'json':
-        return json.dumps(metadata, indent=4)
+    if output == 'write-json':
+        with open(os.path.join(path, 'unnormalized_metadata.json'), 'w') as fp:
+            json.dump(metadata, fp, indent=4)
     return metadata
 
 
 def main():
     path = os.getcwd()
-    print(extract_and_unnormalize(path, output='json'))
+    extract_and_unnormalize(path, output='write-json')
+    with open(os.path.join(path, 'unnormalized_metadata.json'), 'r') as fp:
+        print('Writing to file: {}'.format(os.path.join(path,'unnormalized_metadata.json')))
+        print(json.load(fp))
 
 if __name__ == '__main__':
     main()
