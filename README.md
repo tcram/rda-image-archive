@@ -9,17 +9,18 @@ This repository is for the development of a digital image archive (for historica
 
 ## layout
 
-- `sql/` is for the metadata schema,
-- `import/` and `export/` are for manual data processing,
-- `stage/` and `deploy/` are for programmatic data processing,
-- `scripts/` is for python modules and executables, and lastly
-    - `scripts/demos/` contains demonstrations as Jupyter notebooks.
+- `schema/` is for the metadata schema,
+- `script/` is for the `rdaia` python script (based off of `mbx`, a sort of "swiss-army knife")
+- `examples/` is for test data sets.
 
 ## references
 
-This repository was initially derived from the source code in <https://github.com/riceissa/aiwatch/>.
+This repository has been heavily influenced by code at:
 
-Additionally, this repo was based on a survey of the following:
+- <https://github.com/riceissa/aiwatch/>
+- <https://github.com/rbeezer/mathbook>
+
+Additionally, this repo was based on a survey of the following literature:
 
 - DataCite Metadata Working Group. (2019). DataCite Metadata Schema Documentation for the Publication and Citation of Research Data. Version 4.2. DataCite e.V. https://doi.org/10.5438/bmjt-bx77
 - [White Paper: Uploading to Internet Archive](https://about.biodiversitylibrary.org/help/digitization-resources/upload/#Background-Getting%20an%20identifier-Mandatory%20Metadata). Joel Richard <richardjm@si.edu>, Smithsonian Libraries. Retrieved June 6, 2019.
@@ -46,7 +47,6 @@ Before going into detail, there are a few preliminaries to address.
     - python-magic <https://pypi.org/project/python-magic/>
     - pandas <https://pandas.pydata.org/>
     - TODO list other required python libraries <ccg, 2019-07-08>
-    
 
 ### Local installation
 

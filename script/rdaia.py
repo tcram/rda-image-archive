@@ -38,7 +38,7 @@ def get_rdaia_path():
     _verbose("discovering RDAIA root directory from mbx script location")
     # full path to script itself
     rdaia_path = os.path.abspath(sys.argv[0])
-    # split "mbx" executable off path
+    # split "rdaia" executable off path
     script_dir, _ = os.path.split(rdaia_path)
     # split "script" path off executable
     distribution_dir, _ = os.path.split(script_dir)
