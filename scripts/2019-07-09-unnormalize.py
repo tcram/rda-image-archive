@@ -37,7 +37,7 @@ def catalog_content_under(path):
     if os.path.isdir(path):
         for content in os.listdir(path):
             p = os.path.join(path, content)
-	    _,ext = os.path.splitext(p)
+            _,ext = os.path.splitext(p)
             if os.path.isfile(p) and ext == 'csv':
                 if "text" in magic.from_file(p, mime=True):
                     content_dict = pool_metadata(p, content_dict)
@@ -64,10 +64,10 @@ def pool_metadata(path, content_dict):
                 file.seek(0)
                 reader = csv.reader(file, dialect)
                 key_value_pairs = {
-                        rows[0].strip():rows[1].strip() 
-                        for rows in reader if any(rows)} 
+                        rows[0].strip():rows[1].strip()
+                        for rows in reader if any(rows)}
                 content_dict = {
-                        **content_dict, 
+                        **content_dict,
                         **key_value_pairs}
     except csv.Error as e:
         sys.exit('csv file: {}, line {}: {}'.format(
@@ -78,7 +78,7 @@ def unnormalize_catalog(catalog):
     flatdict = {k:v for k,v in catalog.items() if k != 'contains'}
     lowerdicts = catalog['contains']
     return tail_unnormalize_catalog(flatdict, lowerdicts)
-    
+
 def flatten_list(nl):
       items = [i for i in nl if type(i) != list]
       lists = [l for l in nl if l not in items]
