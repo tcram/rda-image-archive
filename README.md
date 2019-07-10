@@ -10,17 +10,21 @@ This repository is for the development of a digital image archive (for historica
 ## layout
 
 - `schema/` is for the metadata schema,
-- `script/` is for the `rdaia` python script (based off of `mbx`, a sort of "swiss-army knife")
+- `script/` contains 
+    - a polished `rdaia` python executable (which is a sort of "swiss-army knife" for the metadata provider) and 
+    - one-off exploratory scripts labelled by date. 
 - `examples/` is for test data sets.
+
+(Beware: relative paths for scripts written prior to 2019-07-01 are broken.)
 
 ## references
 
-This repository has been heavily influenced by code at:
+This repository has made use of source code developed elsewhere:
 
 - <https://github.com/riceissa/aiwatch/>
 - <https://github.com/rbeezer/mathbook>
 
-Additionally, this repo was based on a survey of the following literature:
+Additionally, this repo was based on a survey of the following:
 
 - DataCite Metadata Working Group. (2019). DataCite Metadata Schema Documentation for the Publication and Citation of Research Data. Version 4.2. DataCite e.V. https://doi.org/10.5438/bmjt-bx77
 - [White Paper: Uploading to Internet Archive](https://about.biodiversitylibrary.org/help/digitization-resources/upload/#Background-Getting%20an%20identifier-Mandatory%20Metadata). Joel Richard <richardjm@si.edu>, Smithsonian Libraries. Retrieved June 6, 2019.
