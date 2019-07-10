@@ -7,6 +7,7 @@
 """
 Scrape json files for metadata to save as sql.
 """
+# Woefully underprepared <ccg, 2019-07-10> # 
 
 import pandas as pd
 import json
