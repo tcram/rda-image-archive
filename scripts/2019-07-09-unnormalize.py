@@ -76,6 +76,44 @@ def catalog_content_under(path):
     
     return content_dict
 
-import json
+def flatten_catalog(catalog):
+    flatdict = {k:v for k,v in catalog.items() if k != 'contains'}
+    lowerdicts = catalog['contains']
+    return tail_flatten_catalog(flatdict, lowerdicts)
+    
+def tail_flatten_catalog(flatdict,lowerdicts):
+
+    behead = lambda catalog: {k:v for k,v in catalog.items() if k != 'contains'}
+
+    assimilate = lambda flatdict, catalog: \
+        tail_flatten_catalog(
+                {**flatdict, **behead(catalog)}, catalog['contains']) \
+        if 'contains' in set(catalog.keys()) \
+        else {**flatdict, **catalog}
+
+    return [assimilate(flatdict, catalog) for catalog in lowerdicts]
+
+def tailflatten_list(flist,nlists):
+
+    if nlists == []:
+        return flist
+
+    new_nlists = []
+    new_flist = flist
+    for nl in nlists:
+        items = [i for i in nl if type(i) != list]
+        lists = [l for l in nl if l not in items]
+        new_flist.extend(items)
+        new_nlists.extend(lists)
+    return tailflatten_list(new_flist, new_nlists)
+
+def flatten_list(nl):
+  items = [i for i in nl if type(i) != list]
+  lists = [l for l in nl if l not in items]
+  return tailflatten_list(items, lists)
+
 path = '/home/colton/fy/20/rda-image-archive/tests/template20190703_example_tree'
-print(json.dumps(catalog_content_under(path), indent=2))
+
+catalog = catalog_content_under(path)
+
+flatten_list(flatten_catalog(catalog))
