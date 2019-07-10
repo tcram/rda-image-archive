@@ -14,6 +14,34 @@ import errno
 import magic
 import csv
 
+def catalog_content_under(path):
+    """Catalogs the files and directories below the provided relative path,
+    given metadata included as csv files in the directory tree.
+
+    :path: Relative path to directory to be cataloged. Should be a directory.
+    :returns: Nested json describing files, directories, and metadata.
+
+    """
+    content_dict = {}
+    try:
+        content_dict['contains'] = [
+            catalog_content_under(os.path.join(path, content))
+            for content in os.listdir(path)
+        ]
+    except OSError as e:
+        if e.errno != errno.ENOTDIR:
+            raise
+        content_dict['type'] = 'file'
+        content_dict['path'] = path 
+        content_dict['media_type'] = magic.from_file(path, mime=True)
+    if os.path.isdir(path):
+        for content in os.listdir(path):
+            p = os.path.join(path, content)
+            if os.path.isfile(p):
+                if "text" in magic.from_file(p, mime=True):
+                    content_dict = pool_metadata(p, content_dict)
+    return content_dict
+
 def pool_metadata(path, content_dict):
     """Collects metadata from csv text files at a given path,
     storing the key value pairs in the content dictionary.
@@ -45,59 +73,28 @@ def pool_metadata(path, content_dict):
             path, reader.line_num, e))
     return content_dict
 
-def catalog_content_under(path):
-    """Catalogs the files and directories below the provided relative path,
-    given metadata included as csv files in the directory tree.
-
-    :path: Relative path to directory to be cataloged. Should be a directory.
-    :returns: Nested json describing files, directories, and metadata.
-
-    """
-    content_dict = {}
-
-    try:
-        content_dict['contains'] = [
-            catalog_content_under(os.path.join(path, content))
-            for content in os.listdir(path)
-        ]
-    except OSError as e:
-        if e.errno != errno.ENOTDIR:
-            raise
-        content_dict['type'] = 'file'
-        content_dict['path'] = path 
-        content_dict['media_type'] = magic.from_file(path, mime=True)
-
-    if os.path.isdir(path):
-        for content in os.listdir(path):
-            p = os.path.join(path, content)
-            if os.path.isfile(p):
-                if "text" in magic.from_file(p, mime=True):
-                    content_dict = pool_metadata(p, content_dict)
-    
-    return content_dict
-
-def flatten_catalog(catalog):
+def unnormalize_catalog(catalog):
     flatdict = {k:v for k,v in catalog.items() if k != 'contains'}
     lowerdicts = catalog['contains']
-    return tail_flatten_catalog(flatdict, lowerdicts)
+    return tail_unnormalize_catalog(flatdict, lowerdicts)
     
-def tail_flatten_catalog(flatdict,lowerdicts):
+def flatten_list(nl):
+      items = [i for i in nl if type(i) != list]
+      lists = [l for l in nl if l not in items]
+      return tail_flatten_list(items, lists)
 
+def tail_unnormalize_catalog(flatdict,lowerdicts):
     behead = lambda catalog: {k:v for k,v in catalog.items() if k != 'contains'}
-
     assimilate = lambda flatdict, catalog: \
-        tail_flatten_catalog(
+        tail_unnormalize_catalog(
                 {**flatdict, **behead(catalog)}, catalog['contains']) \
         if 'contains' in set(catalog.keys()) \
         else {**flatdict, **catalog}
-
     return [assimilate(flatdict, catalog) for catalog in lowerdicts]
 
-def tailflatten_list(flist,nlists):
-
+def tail_flatten_list(flist,nlists):
     if nlists == []:
         return flist
-
     new_nlists = []
     new_flist = flist
     for nl in nlists:
@@ -105,15 +102,13 @@ def tailflatten_list(flist,nlists):
         lists = [l for l in nl if l not in items]
         new_flist.extend(items)
         new_nlists.extend(lists)
-    return tailflatten_list(new_flist, new_nlists)
+    return tail_flatten_list(new_flist, new_nlists)
 
-def flatten_list(nl):
-  items = [i for i in nl if type(i) != list]
-  lists = [l for l in nl if l not in items]
-  return tailflatten_list(items, lists)
-
-path = '/home/colton/fy/20/rda-image-archive/tests/template20190703_example_tree'
-
-catalog = catalog_content_under(path)
-
-flatten_list(flatten_catalog(catalog))
+import json
+def extract_and_unnormalize(path, **kwargs):
+    catalog = catalog_content_under(path)
+    metadata = flatten_list(unnormalize_catalog(catalog))
+    output = kwargs.get('output', None)
+    if output == 'json':
+        return json.dumps(metadata, indent=4)
+    return metadata
