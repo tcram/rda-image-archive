@@ -38,7 +38,7 @@ def catalog_content_under(path):
         for content in os.listdir(path):
             p = os.path.join(path, content)
             _,ext = os.path.splitext(p)
-            if os.path.isfile(p) and ext == 'csv':
+            if os.path.isfile(p) and ext == '.csv':
                 if "text" in magic.from_file(p, mime=True):
                     content_dict = pool_metadata(p, content_dict)
     return content_dict
@@ -60,7 +60,7 @@ def pool_metadata(path, content_dict):
                 seems_to_be_csv = True
             except:
                 seems_to_be_csv = False
-            if (seems_to_be_csv == True) and (ext == 'csv'):
+            if seems_to_be_csv == True:
                 file.seek(0)
                 reader = csv.reader(file, dialect)
                 key_value_pairs = {
