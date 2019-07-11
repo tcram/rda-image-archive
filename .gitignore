@@ -1,18 +1,10 @@
 __pycache__
 .ipynb_checkpoints
 
-data
-stage
-deploy
 *.JPG
 *.jpg
 *.jp2
 *.pdf
+*.png
 
-mysql_args
-api/backend/globalVariables/passwordFile.inc
-api/jquery.min.js
-api/jquery.tablesorter.js
-api/tablesorter.css
-api/anchor.min.js
-api/head_date.txt
+user/mysql_args

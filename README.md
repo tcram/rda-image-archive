@@ -9,15 +9,20 @@ This repository is for the development of a digital image archive (for historica
 
 ## layout
 
-- `sql/` is for the metadata schema,
-- `import/` and `export/` are for manual data processing,
-- `stage/` and `deploy/` are for programmatic data processing,
-- `scripts/` is for python modules and executables, and lastly
-    - `scripts/demos/` contains demonstrations as Jupyter notebooks.
+- `schema/` is for the metadata schema,
+- `script/` contains 
+    - a polished `rdaia` python executable (which is a sort of "swiss-army knife" for the metadata provider) and 
+    - one-off exploratory scripts labelled by date. 
+- `examples/` is for test data sets.
+
+(Beware: relative paths for scripts written prior to 2019-07-01 are broken.)
 
 ## references
 
-This repository was initially derived from the source code in <https://github.com/riceissa/aiwatch/>.
+This repository has made use of source code developed elsewhere:
+
+- <https://github.com/riceissa/aiwatch/>
+- <https://github.com/rbeezer/mathbook>
 
 Additionally, this repo was based on a survey of the following:
 
@@ -46,7 +51,6 @@ Before going into detail, there are a few preliminaries to address.
     - python-magic <https://pypi.org/project/python-magic/>
     - pandas <https://pandas.pydata.org/>
     - TODO list other required python libraries <ccg, 2019-07-08>
-    
 
 ### Local installation
 
