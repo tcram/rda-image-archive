@@ -9,12 +9,11 @@ import glob
 import subprocess
 
 # Disk with original images
-image_source='/glade/scratch/brohan/Image_disc_copy//Catherine_Ross_DWR/1903A/DWR_1903_10.pdf'
+image_source='/glade/scratch/brohan/Image_disc_copy/Catherine_Ross_DWR/1903A/DWR_1903_10.pdf'
 # Take the first n
 n_images = 10
 
-target_dir = "%s/%s" % (os.path.dirname(__file__),
-                        '1903')
+target_dir = os.path.join(os.path.dirname(__file__), '1903')
 
 if not os.path.isdir(target_dir):
     os.makedirs(target_dir)
