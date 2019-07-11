@@ -114,16 +114,7 @@ def extract_and_unnormalize(path, **kwargs):
         with open(os.path.join(path, 'unnormalized_metadata.json'), 'w') as fp:
             json.dump(metadata, fp, indent=4)
     return metadata
-
-def main(path):
-    path = os.path.abs()
-    extract_and_unnormalize(path, output='write-json')
-    with open(os.path.join(path, 'unnormalized_metadata.json'), 'r') as fp:
-        print('Writing to file: {}'.format(os.path.join(path,'unnormalized_metadata.json')))
-        print(json.load(fp))
+    
 
 if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser(description='Description of your program')
-)
-    main()
+    extract_and_unnormalize(os.getcwd(), output='write-json')
