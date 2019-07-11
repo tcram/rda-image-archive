@@ -1,8 +1,10 @@
-# minimal gitignore <ccg, 2019-05-29> # 
+__pycache__
+.ipynb_checkpoints
 
 *.JPG
 *.jpg
+*.jp2
 *.pdf
+*.png
 
-__pycache__
-.ipynb_checkpoints
+user/mysql_args
