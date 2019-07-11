@@ -117,4 +117,14 @@ def extract_and_unnormalize(path, **kwargs):
     
 
 if __name__ == '__main__':
-    extract_and_unnormalize(os.getcwd(), output='write-json')
+# extract_and_unnormalize(os.getcwd(), output='write-json')
+    import time
+    t0=time.time()
+    metadata = catalog_content_under(os.getcwd())
+    with open(os.path.join(path, 'normalized_metadata.json'), 'w') as fp:
+        json.dump(metadata, fp, indent=4)
+    t1=time.time()
+    with open(os.path.join(path, 'timed.json'), 'w') as tp:
+        timed = t1 - t0
+        info = {'timed':timed}
+        json.dump(info, tp, indent=4)
