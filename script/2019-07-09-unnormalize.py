@@ -120,7 +120,8 @@ if __name__ == '__main__':
 # extract_and_unnormalize(os.getcwd(), output='write-json')
     import time
     t0=time.time()
-    metadata = catalog_content_under(os.getcwd())
+    path = os.getcwd()
+    metadata = catalog_content_under(path)
     with open(os.path.join(path, 'normalized_metadata.json'), 'w') as fp:
         json.dump(metadata, fp, indent=4)
     t1=time.time()
