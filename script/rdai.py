@@ -4,7 +4,7 @@
 # Colton Grainger 
 
 """
-Module and utilities script for the RDA Image Archive (RDAIA).
+Module and utilities script for RDA images (RDAI).
 """
 
 # fakesection: utilities
@@ -17,39 +17,40 @@ Module and utilities script for the RDA Image Archive (RDAIA).
 
 def _verbose(msg):
     """Write a message to the console on program progress"""
-    if __name__ == "__main__":
+    try:
         global args
         # None if not set at all
         if args.verbose and args.verbose >= 1:
-            print('RDAIA: {}'.format(msg))
-    print('RDAIA: {}'.format(msg))
-
+            print('RDAI: {}'.format(msg))
+    except NameError:
+        print('RDAI: {}'.format(msg))
 
 def _debug(msg):
     """Write a message to the console with some raw information"""
-    if __name__ == "__main__":
+    try:
         global args
         # None if not set at all
         if args.verbose and args.verbose >= 2:
-            print('RDAIA-DEBUG: {}'.format(msg))
-    print('RDAIA-DEBUG: {}'.format(msg))
+            print('RDAI-DEBUG: {}'.format(msg))
+    except NameError:
+        print('RDAI-DEBUG: {}'.format(msg))
 
-def get_rdaia_path():
-    """Returns path of root of RDAIA distribution"""
+def get_rdai_path():
+    """Returns path of root of RDAI distribution"""
     import sys, os.path
-    _verbose("discovering RDAIA root directory from mbx script location")
+    _verbose("discovering RDAI root directory from mbx script location")
     # full path to script itself
-    rdaia_path = os.path.abspath(sys.argv[0])
-    # split "rdaia" executable off path
-    script_dir, _ = os.path.split(rdaia_path)
+    rdai_path = os.path.abspath(sys.argv[0])
+    # split "RDAI" executable off path
+    script_dir, _ = os.path.split(rdai_path)
     # split "script" path off executable
     distribution_dir, _ = os.path.split(script_dir)
-    _verbose("RDAIA distribution root directory: {}".format(distribution_dir))
+    _verbose("RDAI distribution root directory: {}".format(distribution_dir))
     return distribution_dir
 
 
 def get_source_path(source_file):
-    """Returns path to (likely a json?) source file"""
+    """Returns path to content to be acted upon"""
     import sys, os.path
     _verbose("discovering source directory from source location")
     # split path off filename
@@ -74,7 +75,7 @@ def get_executable(config, exec_name):
     try:
         result_code = subprocess.call(['which', config_name], stdout=devnull, stderr=subprocess.STDOUT)
     except OSError:
-        print('RDAIA:WARNING: executable existence-checking was not performed (e.g. on Windows)')
+        print('RDAI:WARNING: executable existence-checking was not performed (e.g. on Windows)')
         result_code = 0  # perhaps a lie on Windows
     if result_code != 0:
         error_message = '\n'.join([
@@ -87,7 +88,7 @@ def get_executable(config, exec_name):
 def get_cli_arguments():
     """Return the CLI arguments in parser object"""
     import argparse
-    parser = argparse.ArgumentParser(description='RDAIA utility script', formatter_class=argparse.RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(description='RDAI utility script', formatter_class=argparse.RawTextHelpFormatter)
 
     verbose_help = '\n'.join(["verbosity of information on progress of the program",
                               "  -v  is actions being performed",
@@ -95,44 +96,35 @@ def get_cli_arguments():
     parser.add_argument('-v', '--verbose', help=verbose_help, action="count")
 
     component_info = [
-        ('csv-metadata', 'Metadata determined by csv tag files in directory tree'),
-        ('json-metadata', 'Metadata determined by json catalog of image files'),
-        ('file-storage', 'Storage of image files by UUIDs'),
-        # ('sql-server', 'Updates to local MySQL server'),
+        ('metadata', 'Metadata for data files.'),
+        ('uuid', 'UUIDs for data files.'),
+        ('bundle', 'Bundle from metadata, UUIDs, and data files.'),
+        ('database', 'Database from bundle.'),
     ]
     component_help = 'Possible components are:\n' + '\n'.join(['  {} - {}'.format(info[0], info[1]) for info in component_info])
     parser.add_argument('-c', '--component', help=component_help, action="store", dest="component")
 
-    format_info = [
-        ('csv', 'Comma Separated Values (Unnormalized)'),
-        ('json', 'JavaScript Object Notation (Unnormalized)'),
-        ('xml', 'eXtensible Markup Language (Normalized)'),
-        ('all', 'All available output formats'),
-        # ('sql', 'MySQL injection'),
+    metadata_input_info = [
+        ('csv', 'Recursively read *.csv files in data directory. Format: "key","value".'),
+        ('json', 'Recursively read *.json files in data directory. Format: {"key":"value"}.'),
+        ('xml', 'Read single *.xml file from root of data directory. See docs for XML Schema.'),
     ]
-    format_help = 'Output formats are:\n' + '\n'.join(['  {} - {}'.format(info[0], info[1]) for info in format_info])
-    parser.add_argument('-f', '--format', help=format_help, action="store", dest='format')
+    metadata_input_help = 'Possible metadata input formats are:\n' + '\n'.join(['  {} - {}'.format(info[0], info[1]) for info in metadata_input_info])
+    parser.add_argument('-m', '--metadata-input', help=metadata_input_help, action="store", dest='metadata_input')
+
+    parser.add_argument('-d', '--data-dir', help='path to data directory', action="store", dest='data_dir')
+    parser.add_argument('-o', '--output-dir', help='path to output directory', action="store", dest='output_dir')
+    return parser.parse_args()
 
     # "nargs" allows multiple options following the flag
     # separate by spaces, can't use "-stringparam"
     # stringparams is a list of strings on return
     # parser.add_argument('-p', '--parameters', nargs='+', help='stringparam options to pass to XSLT extraction stylesheet (option/value pairs)',
     #                      action="store", dest='stringparams')
-
     # # default to an empty string, which signals root to XSL stylesheet
     # parser.add_argument('-r', '--restrict', help='restrict to subtree rooted at element with specified xml:id',
     #                      action="store", dest='xmlid', default='')
-
     # parser.add_argument('-s', '--server', help='base URL for server (webwork only)', action="store", dest='server')
-    parser.add_argument('-i', '--include', help='external data directory, relative to source, latex-image only', action="store", dest='data_dir')
-    parser.add_argument('-o', '--output', help='file for output', action="store", dest='out')
-    parser.add_argument('-d', '--directory', help='directory for output', action="store", dest='dir')
-    parser.add_argument('-a', '--abort', help='abort script upon recoverable errors', action="store_true", dest='abort')
-
-    # TODO include root of metadata as json file <ccg, 2019-07-11> # 
-    # parser.add_argument('json_file', help='RDAIA json source file with content', action="store")
-    return parser.parse_args()
-
 
 def sanitize_directory(dir):
     """Verify directory name, or raise error"""
@@ -174,7 +166,7 @@ def sanitize_alpha_num_underscore(param):
 def get_config_info(script_dir, user_dir):
     """Return configuation in object for querying"""
     import sys,os.path
-    config_filename = "mbx.cfg"
+    config_filename = "rdai.cfg"
     default_config_file = os.path.join(script_dir, config_filename)
     user_config_file = os.path.join(user_dir, config_filename)
     config_file_list = [default_config_file, user_config_file]
@@ -218,3 +210,70 @@ def break_windows_path(python_style_dir):
     """Replace python os.sep with msys-acceptable "/" """
     import re
     return re.sub(r"\\", "/", python_style_dir)
+
+# fakesection: main # 
+# Copyright 2010-2016 Robert A. Beezer
+# These functions were originally part of MathBook XML.
+
+# Parse command line
+# Deduce some paths
+# Read configuration file
+# Switch on command line
+
+import os.path, sys
+
+# grab command line arguments
+args = get_cli_arguments()
+_debug("CLI args {}".format(vars(args)))
+
+# Report Python version in debugging output
+msg = "Python version: {}.{}"
+_debug(msg.format(sys.version_info[0], sys.version_info[1]))
+
+# directory locations relative to RDAI installation
+rdai_dir = get_rdai_path()
+rdai_schema_dir = os.path.join(rdai_dir, "schema")
+rdai_script_dir = os.path.join(rdai_dir, "script")
+rdai_user_dir = os.path.join(rdai_dir, "user")
+_debug("schema, script, user dirs: {}".format([rdai_schema_dir, rdai_script_dir, rdai_user_dir]))
+
+# directory location for outputs
+output_dir = os.path.abspath(args.output_dir)
+_debug("output directory: {}".format(output_dir))
+
+# directory location for data
+data_dir = os.path.abspath(args.data_dir)
+_debug("data directory: {}".format(data_dir))
+
+config = get_config_info(rdai_script_dir, rdai_user_dir)
+plat = get_platform()
+
+if args.component == 'metadata':
+    if args.metadata_input in ['csv','json','xml']:
+        # TODO if catalog exists, raise warning and minimally update
+        # TODO unless forcing flag
+        create_catalog(data_dir, output_dir, args.metadata_input)
+    else:
+        raise NotImplementedError('cannot collect metadata from "{}" format'.format(args.metadata_input))
+
+elif args.component == 'uuid':
+    # TODO if uuid_dict exists, raise warning and minimally update
+    # TODO unless forcing flag
+    create_uuids(data_dir, output_dir)
+
+elif args.component == 'bundle':
+    # TODO test if uuid_dict and catalog exist
+    merge_uuids_into_catalog(output_dir)
+    # TODO optimize the tail-recursion
+    unnormalize_catalog(output_dir)
+    # TODO avoid frivilous updates with rsync (or shutils?)
+    rename_by_uuids(data_dir, output_dir)
+
+elif args.component == 'database':
+    # TODO test if bundle exists
+    # TODO unnormalized data as a DataFrame 
+    # TODO read MySQL config
+    # TODO inject (or update?) DataFrame
+
+else:
+    raise ValueError('the "{}" component is not a valid RDAI option'.format(args.component))
