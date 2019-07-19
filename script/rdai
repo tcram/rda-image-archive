@@ -1,22 +1,19 @@
 #! /usr/bin/env python3
 #
-# 2019-07-10 
+# 2019-07-17
 # Colton Grainger 
-# 
-# Adapted from https://github.com/rbeezer/mathbook/tree/dev/script
-# Copyright 2010-2016 Robert A. Beezer
+
+"""
+Function definitions for the RDA images script (rdai).
+"""
+
+# fakesection: messaging functions {{{ # 
 # These functions were originally part of MathBook XML.
-# MathBook XML is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 2 or version 3.
-
-"""
-rdai utility script
-"""
-
-# fakesection: utilities
+# Adapted from https://github.com/rbeezer/mathbook/tree/dev/script
+# Copyright 2010-2016 Robert A. Beezer, released GPLv2
 # 2016-05-05: this section should run under Python 2.7 and Python 3
 
+# TODO why are these private functions?
 def _verbose(msg):
     """Write a message to the console on program progress"""
     try:
@@ -36,6 +33,13 @@ def _debug(msg):
             print('RDAI-DEBUG: {}'.format(msg))
     except NameError:
         print('RDAI-DEBUG: {}'.format(msg))
+
+#  }}} 
+
+# fakesection: operating system functions {{{
+# These functions were originally part of MathBook XML.
+# Adapted from https://github.com/rbeezer/mathbook/tree/dev/script
+# Copyright 2010-2016 Robert A. Beezer, released GPLv2
 
 def get_rdai_path():
     """Returns path of root of RDAI distribution"""
@@ -213,67 +217,171 @@ def break_windows_path(python_style_dir):
     import re
     return re.sub(r"\\", "/", python_style_dir)
 
-# fakesection: main
+# }}}
 
-# Parse command line
-# Deduce some paths
-# Read configuration file
-# Switch on command line
+# fakesection: preface from "__main__" section of rdai {{{ #
 
-import os.path, sys
+# import os.path, sys
+# args = get_cli_arguments()
 
-# grab command line arguments
-args = get_cli_arguments()
-_debug("CLI args {}".format(vars(args)))
+# # directory locations relative to RDAI installation
+# rdai_dir = get_rdai_path()
+# rdai_schema_dir = os.path.join(rdai_dir, "schema")
+# rdai_script_dir = os.path.join(rdai_dir, "script")
+# rdai_user_dir = os.path.join(rdai_dir, "user")
 
-# Report Python version in debugging output
-msg = "Python version: {}.{}"
-_debug(msg.format(sys.version_info[0], sys.version_info[1]))
+# # directory location for outputs
+# output_dir = os.path.abspath(args.output_dir)
+# _debug("output directory: {}".format(output_dir))
 
-# directory locations relative to RDAI installation
-rdai_dir = get_rdai_path()
-rdai_schema_dir = os.path.join(rdai_dir, "schema")
-rdai_script_dir = os.path.join(rdai_dir, "script")
-rdai_user_dir = os.path.join(rdai_dir, "user")
-_debug("schema, script, user dirs: {}".format([rdai_schema_dir, rdai_script_dir, rdai_user_dir]))
+# # directory location for data
+# data_dir = os.path.abspath(args.data_dir)
+# _debug("data directory: {}".format(data_dir))
 
-# directory location for outputs
-output_dir = os.path.abspath(args.output_dir)
-_debug("output directory: {}".format(output_dir))
+# config = get_config_info(rdai_script_dir, rdai_user_dir)
+# plat = get_platform()
+#  }}} fold # 
 
-# directory location for data
-data_dir = os.path.abspath(args.data_dir)
-_debug("data directory: {}".format(data_dir))
+# fakesection: conditional directives from "__main__" section of rdai {{{ #
 
-config = get_config_info(rdai_script_dir, rdai_user_dir)
-plat = get_platform()
+# if args.component == 'metadata':
+#     if args.metadata_input in ['csv','json','xml']:
+#         # TODO if catalog exists, raise warning and minimally update
+#         # TODO unless forcing flag
+#         create_catalog(data_dir, output_dir, args.metadata_input)
+#     else:
+#         raise NotImplementedError('cannot collect metadata from "{}" format'.format(args.metadata_input))
 
-if args.component == 'metadata':
-    if args.metadata_input in ['csv','json','xml']:
-        # TODO if catalog exists, raise warning and minimally update
-        # TODO unless forcing flag
-        create_catalog(data_dir, output_dir, args.metadata_input)
-    else:
-        raise NotImplementedError('cannot collect metadata from "{}" format'.format(args.metadata_input))
+# elif args.component == 'uuid':
+#     # TODO if uuid_dict exists, raise warning and minimally update
+#     # TODO unless forcing flag
+#     create_uuids(data_dir, output_dir)
 
-elif args.component == 'uuid':
-    # TODO if uuid_dict exists, raise warning and minimally update
-    # TODO unless forcing flag
-    create_uuids(data_dir, output_dir)
+# elif args.component == 'bundle':
+#     # TODO test if uuid_dict and catalog exist
+#     merge_uuids_into_catalog(output_dir)
+#     # TODO optimize the tail-recursion
+#     unnormalize_catalog(output_dir)
+#     # TODO avoid frivilous updates with rsync (or shutils?)
+#     rename_by_uuids(data_dir, output_dir)
 
-elif args.component == 'bundle':
-    # TODO test if uuid_dict and catalog exist
-    merge_uuids_into_catalog(output_dir)
-    # TODO optimize the tail-recursion
-    unnormalize_catalog(output_dir)
-    # TODO avoid frivilous updates with rsync (or shutils?)
-    rename_by_uuids(data_dir, output_dir)
+# elif args.component == 'database':
+#     # TODO test if bundle exists
+#     # TODO unnormalized data as a DataFrame 
+#     # TODO read MySQL config
+#     # TODO inject (or update?) DataFrame
 
-elif args.component == 'database':
-    # TODO test if bundle exists
-    # TODO unnormalized data as a DataFrame 
-    # TODO read MySQL config
-    # TODO inject (or update?) DataFrame
+# else:
+#     raise ValueError('the "{}" component is not a valid RDAI option'.format(args.component))
+#  }}} #
 
-else:
-    raise ValueError('the "{}" component is not a valid RDAI option'.format(args.component))
+# fakesection: metadata functions {{{
+# e.g., $ rdai -c metadata -m csv -d ~/data -o ~/tmp
+
+def create_catalog(data_dir, output_dir, args.metadata_input):
+    pass
+
+def catalog_content_under(path):
+    """Catalogs the files and directories below the provided relative path,
+    given '.csv' or '.tsv' metadata (TODO or '.json') in the directory tree.
+
+    :path: Relative path to directory to be cataloged. Should be a directory.
+    :returns: Nested json describing files, directories, and metadata.
+
+    """
+    content_dict = {}
+    try:
+        content_dict['contains'] = [
+            catalog_content_under(os.path.join(path, content))
+            for content in os.listdir(path)
+        ]
+        for content in os.listdir(path):
+            p = os.path.join(path, content)
+            _,ext = os.path.splitext(p)
+            #  TODO test for json flag <ccg, 2019-07-17> # 
+            if os.path.isfile(p) and ext in ['.csv', '.tsv']:
+                content_dict = pool_metadata(p, content_dict)
+    except OSError as e:
+        if e.errno != errno.ENOTDIR:
+            raise
+        content_dict['type'] = 'file'
+        content_dict['path'] = path 
+        content_dict['media_type'] = magic.from_file(path, mime=True)
+    return content_dict
+
+def pool_metadata(path, content_dict):
+    """Collects metadata from '.csv' and '.tsv' files at a given path,
+    storing the key value pairs in the content dictionary. TODO: support json.
+
+    :path: Relative path to file.
+    :content_dict: Dictionary to write out key-value pairs.
+    :returns: Content dictionary, with metadata appended.
+
+    """
+    # TODO add logic for json key-value pairs or xml hierarchy
+    file_is_csv = False 
+    try:
+        # an error trial for existence of key-value pairs
+        with open(path, newline='') as file:
+            # another error trial for ill-formed csv files
+            try:
+                dialect = csv.Sniffer().sniff(
+                        file.read(1024), delimiters=',\t')
+                file_is_csv = True
+            except csv.Error as e:
+                sys.exit('CSV Sniffer failed to parse file: {}, error: {}'.format(path, e))
+
+            if file_is_csv:
+                file.seek(0)
+                reader = csv.reader(file, dialect)
+                key_value_pairs = {
+                        # if one needs to concatenate all rows 2+
+                        # rows[0].strip():[x.strip for x in rows[1:]]
+                        rows[0].strip():rows[1].strip()
+                        for rows in reader if any(rows)}
+                content_dict = {
+                        **content_dict,
+                        **key_value_pairs}
+    except csv.Error as e:
+        sys.exit('csv file: {}, line {}: {}'.format(
+            path, reader.line_num, e))
+    return content_dict
+
+# }}}
+
+# fakesection: uuid functions {{{
+# e.g., $ rdai -c uuid -d ~/data -o ~/tmp
+
+# to test if file uuids have already been assigned 
+# TODO post uuid_dict via API <ccg, 2019-07-17> # 
+
+# to generate (or update) file uuids
+
+def create_uuids(data_dir, output_dir):
+
+# }}}
+
+# fakesection: bundle functions {{{
+# e.g., $ rdai -c bundle -d ~/data -o ~/tmp
+
+# to unnormalize the json catalog in the output_dir ~/tmp
+# TODO optimize recursive step <ccg, 2019-07-17> # 
+def unnormalize_catalog(output_dir):
+
+# to bundle the existing uuid_dict and catalog
+def merge_uuids_into_catalog(output_dir):
+
+# to rsync cataloged files from ~/data to ~/tmp and rename by uuid
+# TODO avoid frivilous updates with rsync (or shutils?)
+# TODO add configuration for remote output_dir <ccg, 2019-07-17> # 
+def rename_by_uuids(data_dir, output_dir):
+
+# }}}
+
+# fakesection: database functions {{{
+# e.g., $ rdai -c database -o ~/tmp
+# to retrieve the database config and handle errors
+# to initialize a test database with the rdai schema
+# to inject bundled metadata into the test database
+
+# }}}

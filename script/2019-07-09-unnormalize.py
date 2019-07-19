@@ -28,19 +28,18 @@ def catalog_content_under(path):
             catalog_content_under(os.path.join(path, content))
             for content in os.listdir(path)
         ]
-    except OSError as e:
-        if e.errno != errno.ENOTDIR:
-            raise
-        content_dict['type'] = 'file'
-        content_dict['path'] = path 
-        content_dict['media_type'] = magic.from_file(path, mime=True)
-    if os.path.isdir(path):
         for content in os.listdir(path):
             p = os.path.join(path, content)
             _,ext = os.path.splitext(p)
             if os.path.isfile(p) and ext == '.csv':
                 if "text" in magic.from_file(p, mime=True):
                     content_dict = pool_metadata(p, content_dict)
+    except OSError as e:
+        if e.errno != errno.ENOTDIR:
+            raise
+        content_dict['type'] = 'file'
+        content_dict['path'] = path 
+        content_dict['media_type'] = magic.from_file(path, mime=True)
     return content_dict
 
 def pool_metadata(path, content_dict):
