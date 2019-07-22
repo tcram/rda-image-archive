@@ -27,7 +27,10 @@ df = pd.read_csv(os.path.join(parentDirectory, 'import', '2018-05-16-NARA-master
 df.rename(str.strip, axis='columns',inplace=True)
 df.drop(columns=['Box or Volume Number.1'], inplace=True)
 
-# take sample from each record group
+# Take sample from each record group;
+# shuffling out N random ships to perform 
+# a generalizable reaction from the frequencist's
+# perspective. We parse and disbanden these. 
 NARA_record_group_dict = dict([(23, 'USCS'), # Records of the Coast and Geodetic Survey
                                (24, 'Navy'), # Records of the Bureau of Naval Personnel
                                (26, 'CG'), # Records of the U.S. Coast Guard
@@ -56,9 +59,13 @@ def download_nara_entry(entry): # entry is assumed to be a *DataFrame*
     # num_images = int(entry['Number of Images'].iloc[0])
     # digital_directory = ['Digital Directory'].iloc[0]
 
-    # parse NARA API output for metadata
-    entry_img_array = res.json().get('opaResponse').get('results').get('result')[0]\
-                      .get('objects').get('object')
+    # Parse NARA API output for metadata.
+    entry_img_array = res.json() 
+    object_img_array = entry_image_array[
+            'opaResponse','results','result', 0, 'objects','object']
+            # Only a *view* of the json, accessed by fancy indexing
+            # an NumPy numerical array. <ccg, 2019-07-19>
+        
     digital_directory = entry_img_array[0].get('file').get('@path').split("/")[-2]
 
     # create local directories if needed
