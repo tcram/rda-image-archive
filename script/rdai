@@ -383,38 +383,57 @@ def pool_metadata(tagfile, normalized_catalog):
 # e.g., $ rdai -c uuid -d ~/data -o ~/tmp
 
 def get_fixed_seq():
+    """Declares/updates global fixed_seq, which seeds mind_uuid()."""
     global fixed_seq
     from random import getrandbits
     fixed_seq = getrandbits(14)
 
 def mint_uuid(node=None):
-    # answered 2019-05-16T13:46 by imposeren, CC-3.0
-    # <https://stackoverflow.com/questions/56119272>
-    # get_fixed_seq() should be called prior to mint_uuid().
-    global fixed_seq
+    """Returns a semi-sequential uuid. Requires global fixed_seq to have been
+    defined as a seed."""
     import time
     from uuid import uuid1, getnode
+    # answered 2019-05-16T13:46 by imposeren, CC-3.0
+    # <https://stackoverflow.com/questions/56119272>
+
+    # get_fixed_seq() should be called prior to mint_uuid().
+    global fixed_seq
+
     # Returns a 32-character hexadecimal string, which can be
     # stored in MySQL as BINARY(16) for efficient indexing. C.f.,
     # <https://mysqlserverteam.com/storing-uuid-values-in-mysql-tables/>
     return uuid1(node=node, clock_seq=fixed_seq).hex
 
 def assign_uuid(filepath, overwrite=False):
+    """Reads EXIF:ImageUniqueID tag for valid uuid. If no uuid exists, write
+    mind_uuid() to EXIF:ImageUniqueID tag."""
     import exiftool
     with exiftool.ExifTool() as et:
-        # defaults to None if `EXIF:ImageUniqueID` tag is empty
+        # By default, if the `EXIF:ImageUniqueID` tag is empty, uuid is assigned
+        # to None.
         uuid = et.get_tag('ImageUniqueID', filepath)
-        if uuid == None or overwrite:
+
+        # If a uuid exists and overwrite is False, do nothing.
+        if uuid != None and not overwrite:
+            verbose("Tag EXIF:ImageUniqueID={} already exists in file {}.".format(uuid, filepath))
+
+        # Else, no uuid was read by exiftool, or overwrite has been set to True.
+        else:
             uuid = mint_uuid()
             et.execute_json('-ImageUniqueID={}'.format(uuid).encode(), filepath.encode())
             verbose("Wrote tag EXIF:ImageUniqueID={} to file {}.".format(uuid, filepath))
-        else:
-            debug("Found existing tag EXIF:ImageUniqueID={} in file {}.".format(uuid, filepath))
+
+    # Pass either the read uuid from exiftool or the assigned from mint_uuid().
     return uuid
 
-def get_files_under(dirpath):
+def get_files_under(data_dir):
+    """Returns an iterator of posix paths to each file under data_dir. Is not sorted.
+
+    :dir_path: Relative path to supposed directory.
+    """
+
     from pathlib import Path
-    for p in sorted(Path(dirpath).glob('**/*')):
+    for p in sorted(Path(data_dir).glob('**/*')):
         if p.is_file():
             yield p
 

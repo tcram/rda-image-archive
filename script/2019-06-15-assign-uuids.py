@@ -30,8 +30,10 @@ import os
 path_to_pages = os.path.join(os.pardir, 'import', 'data')
 path_for_export = os.path.join(os.pardir, 'export')
 
-def find_pages(some_path):
-    for filepath in sorted(Path(some_path).glob('**/*')):
+def directory_crawl(dirpath):
+    from pathlib import Path
+    import os
+    for filepath in sorted(Path(dirpath).glob('**/*')):
         if os.path.isfile(filepath):
             yield filepath
 
