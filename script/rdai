@@ -7,14 +7,74 @@
 Function definitions for the RDA images script (rdai).
 """
 
+# from "__main__" section of rdai.py {{{ #
+
+# import os.path, sys
+# args = get_cli_arguments()
+
+# # directory locations relative to RDAI installation
+# rdai_dir = get_rdai_path()
+# rdai_schema_dir = os.path.join(rdai_dir, "schema")
+# rdai_script_dir = os.path.join(rdai_dir, "script")
+# rdai_user_dir = os.path.join(rdai_dir, "user")
+
+# # directory location for outputs
+# output_dir = os.path.abspath(args.output_dir)
+# debug("output directory: {}".format(output_dir))
+
+# # directory location for data
+# data_dir = os.path.abspath(args.data_dir)
+# debug("data directory: {}".format(data_dir))
+
+# config = get_config_info(rdai_script_dir, rdai_user_dir)
+# plat = get_platform()
+#  }}} fold # 
+
+# args component definitions {{{ #
+
+# if args.component == 'metadata':
+#     if args.metadata_input in ['csv','json','xml']:
+#         # TODO if catalog exists, raise warning and minimally update
+#         # TODO unless forcing flag
+#         create_catalog(data_dir, output_dir, args.metadata_input)
+#     else:
+#         raise NotImplementedError('cannot collect metadata from "{}" format'.format(args.metadata_input))
+
+# elif args.component == 'uuid':
+#     # TODO if uuid_dict exists, raise warning and minimally update
+#     # TODO unless forcing flag
+#     create_uuids(data_dir, output_dir)
+
+# elif args.component == 'bundle':
+#     # TODO test if uuid_dict and catalog exist
+#     merge_uuids_into_catalog(output_dir)
+#     # TODO optimize the tail-recursion
+#     unnormalize_catalog(output_dir)
+#     # TODO avoid frivilous updates with rsync (or shutils?)
+#     rename_by_uuids(data_dir, output_dir)
+
+# elif args.component == 'database':
+#     # TODO test if bundle exists
+#     # TODO unnormalized data as a DataFrame 
+#     # TODO read MySQL config
+#     # TODO inject (or update?) DataFrame
+
+# else:
+#     raise ValueError('the "{}" component is not a valid RDAI option'.format(args.component))
+#  }}} #
+
+
 # fakesection: messaging functions {{{ # 
+
 # These functions were originally part of MathBook XML.
 # Adapted from https://github.com/rbeezer/mathbook/tree/dev/script
 # Copyright 2010-2016 Robert A. Beezer, released GPLv2
+
 # 2016-05-05: this section should run under Python 2.7 and Python 3
 
 # TODO why are these private functions?
-def _verbose(msg):
+# DONE date
+def verbose(msg):
     """Write a message to the console on program progress"""
     try:
         global args
@@ -24,7 +84,7 @@ def _verbose(msg):
     except NameError:
         print('RDAI: {}'.format(msg))
 
-def _debug(msg):
+def debug(msg):
     """Write a message to the console with some raw information"""
     try:
         global args
@@ -33,7 +93,6 @@ def _debug(msg):
             print('RDAI-DEBUG: {}'.format(msg))
     except NameError:
         print('RDAI-DEBUG: {}'.format(msg))
-
 #  }}} 
 
 # fakesection: operating system functions {{{
@@ -44,21 +103,21 @@ def _debug(msg):
 def get_rdai_path():
     """Returns path of root of RDAI distribution"""
     import sys, os.path
-    _verbose("discovering RDAI root directory from mbx script location")
+    verbose("discovering RDAI root directory from mbx script location")
     # full path to script itself
     rdai_path = os.path.abspath(sys.argv[0])
     # split "RDAI" executable off path
     script_dir, _ = os.path.split(rdai_path)
     # split "script" path off executable
     distribution_dir, _ = os.path.split(script_dir)
-    _verbose("RDAI distribution root directory: {}".format(distribution_dir))
+    verbose("RDAI distribution root directory: {}".format(distribution_dir))
     return distribution_dir
 
 
 def get_source_path(source_file):
     """Returns path to content to be acted upon"""
     import sys, os.path
-    _verbose("discovering source directory from source location")
+    verbose("discovering source directory from source location")
     # split path off filename
     source_dir, _ = os.path.split(source_file)
     return os.path.normpath(source_dir)
@@ -74,7 +133,7 @@ def get_executable(config, exec_name):
     # which  = 'where.exe' if platform.system() == 'Windows' else 'which'
 
     # get the name, but then see if it really, really works
-    _debug('locating "{}" in [executables] section of configuration file'.format(exec_name))
+    debug('locating "{}" in [executables] section of configuration file'.format(exec_name))
     config_name = config.get('executables', exec_name)
 
     devnull = open(os.devnull, 'w')
@@ -88,7 +147,7 @@ def get_executable(config, exec_name):
                         'cannot locate executable with configuration name "{}" as command "{}"',
                         'Edit the configuration file and/or install the necessary program'])
         raise OSError(error_message.format(exec_name, config_name))
-    _debug("{} executable: {}".format(exec_name, config_name))
+    debug("{} executable: {}".format(exec_name, config_name))
     return config_name
 
 def get_cli_arguments():
@@ -136,7 +195,7 @@ def sanitize_directory(dir):
     """Verify directory name, or raise error"""
     # Use with os.path.join, and do not sweat separator
     import os.path
-    _verbose('verifying directory: {}'.format(dir))
+    verbose('verifying directory: {}'.format(dir))
     if not(os.path.isdir(dir)):
         raise ValueError('directory {} does not exist'.format(dir))
     return dir
@@ -146,7 +205,7 @@ def sanitize_directory(dir):
 # Command line warning can be disabled, requests.packages.urllib3.disable_warnings()
 def sanitize_url(url):
     """Verify a server address, append a slash"""
-    _verbose('validating, cleaning server URL: {}'.format(url))
+    verbose('validating, cleaning server URL: {}'.format(url))
     import requests
     try:
         requests.get(url, verify=False)
@@ -164,7 +223,7 @@ def sanitize_alpha_num_underscore(param):
     """Verify parameter is a string containing only alphanumeric and undescores"""
     import string
     allowed = set(string.ascii_letters + string.digits + '_')
-    _verbose('verifying parameter: {}'.format(param))
+    verbose('verifying parameter: {}'.format(param))
     if not(set(param) <= allowed):
         raise ValueError('param {} contains characters other than a-zA-Z0-9_ '.format(param))
     return param
@@ -182,23 +241,23 @@ def get_config_info(script_dir, user_dir):
     except ImportError:
         import ConfigParser as configparser
     config = configparser.SafeConfigParser()
-    _verbose("parsing configuration files: {}".format(config_file_list))
+    verbose("parsing configuration files: {}".format(config_file_list))
     files_read = config.read(config_file_list)
-    _debug("configuration files used/read: {}".format(files_read))
+    debug("configuration files used/read: {}".format(files_read))
     if not(user_config_file in files_read):
         msg = "using default configuration only, custom configuration file not used at {}"
-        _verbose(msg.format(user_config_file))
+        verbose(msg.format(user_config_file))
     return config
 
 def copy_data_directory(source_file, data_dir, tmp_dir):
     """Stage directory from CLI argument into the working directory"""
     import os.path, shutil
-    _verbose("formulating data directory location")
+    verbose("formulating data directory location")
     source_full_path, _ = os.path.split(os.path.abspath(source_file))
     data_full_path = sanitize_directory(os.path.join(source_full_path, data_dir))
     data_last_step = os.path.basename(os.path.normpath(data_full_path))
     destination_root = os.path.join(tmp_dir, data_last_step)
-    _debug("copying data directory {} to working location {}".format(data_full_path, destination_root))
+    debug("copying data directory {} to working location {}".format(data_full_path, destination_root))
     shutil.copytree(data_full_path, destination_root)
 
 def get_platform():
@@ -219,69 +278,12 @@ def break_windows_path(python_style_dir):
 
 # }}}
 
-# fakesection: preface from "__main__" section of rdai {{{ #
-
-# import os.path, sys
-# args = get_cli_arguments()
-
-# # directory locations relative to RDAI installation
-# rdai_dir = get_rdai_path()
-# rdai_schema_dir = os.path.join(rdai_dir, "schema")
-# rdai_script_dir = os.path.join(rdai_dir, "script")
-# rdai_user_dir = os.path.join(rdai_dir, "user")
-
-# # directory location for outputs
-# output_dir = os.path.abspath(args.output_dir)
-# _debug("output directory: {}".format(output_dir))
-
-# # directory location for data
-# data_dir = os.path.abspath(args.data_dir)
-# _debug("data directory: {}".format(data_dir))
-
-# config = get_config_info(rdai_script_dir, rdai_user_dir)
-# plat = get_platform()
-#  }}} fold # 
-
-# fakesection: conditional directives from "__main__" section of rdai {{{ #
-
-# if args.component == 'metadata':
-#     if args.metadata_input in ['csv','json','xml']:
-#         # TODO if catalog exists, raise warning and minimally update
-#         # TODO unless forcing flag
-#         create_catalog(data_dir, output_dir, args.metadata_input)
-#     else:
-#         raise NotImplementedError('cannot collect metadata from "{}" format'.format(args.metadata_input))
-
-# elif args.component == 'uuid':
-#     # TODO if uuid_dict exists, raise warning and minimally update
-#     # TODO unless forcing flag
-#     create_uuids(data_dir, output_dir)
-
-# elif args.component == 'bundle':
-#     # TODO test if uuid_dict and catalog exist
-#     merge_uuids_into_catalog(output_dir)
-#     # TODO optimize the tail-recursion
-#     unnormalize_catalog(output_dir)
-#     # TODO avoid frivilous updates with rsync (or shutils?)
-#     rename_by_uuids(data_dir, output_dir)
-
-# elif args.component == 'database':
-#     # TODO test if bundle exists
-#     # TODO unnormalized data as a DataFrame 
-#     # TODO read MySQL config
-#     # TODO inject (or update?) DataFrame
-
-# else:
-#     raise ValueError('the "{}" component is not a valid RDAI option'.format(args.component))
-#  }}} #
-
 # fakesection: metadata functions {{{
 # e.g., $ rdai -c metadata -m csv -d ~/data -o ~/tmp
 
-def create_catalog(data_dir, output_dir, args.metadata_input):
-    pass
+# TODO def create_catalog(data_dir, output_dir, args.metadata_input):
 
-def catalog_content_under(path):
+def get_normalized_catalog(path):
     """Catalogs the files and directories below the provided relative path,
     given '.csv' or '.tsv' metadata (TODO or '.json') in the directory tree.
 
@@ -291,81 +293,80 @@ def catalog_content_under(path):
     :returns: Nested json describing files, directories, and metadata.
 
     """
-    # Assign content dictionary to empty collection of key-value pairs.
-    content_dict = {} 
-    
-    # Rely on os.path ERROR NOT DIRECTORY to recognize files.
-    try:
-        content_dict['contains'] = [
-            # Get key-value pairs for files in lower grades.
-            catalog_content_under(os.path.join(path, content))
-            # Do so for each file/directory in our directory.
-            for content in os.listdir(path)
-        ]
-        # Get key-value pairs for metadata assignment files at current grade.
-        for content in os.listdir(path):
-            # Determine file extension (TODO redo with python-magic).
-            p = os.path.join(path, content)
-            _,ext = os.path.splitext(p)
-            # TODO Test for `-m json` flag. <ccg, 2019-07-17>.
-            # TODO Testing os.path.isfile(p) is redundant if we have an exception ENOTDIR
-            if os.path.isfile(p) and ext in ['.csv', '.tsv']:
-                # Update content dictionary for each metadata file in directory.
-                content_dict = pool_metadata(p, content_dict)
-    # Write file metadata upon ENOTDIR.
-    except OSError as e:
-        if e.errno != errno.ENOTDIR:
-            raise
-        content_dict['type'] = 'file'
-        content_dict['path'] = path 
-        # TODO avoid this redundant parsing operation
-        content_dict['media_type'] = magic.from_file(path, mime=True)
-    return content_dict
+    from pathlib import Path
+    import os
+    parent = Path(path)
+    normalized_catalog = {} 
 
-def pool_metadata(path, content_dict):
-    """Collects metadata from '.csv' and '.tsv' files at a given path,
-    storing the key value pairs in the content dictionary. 
+    if parent.is_dir():
+        # Find relative path to each file under `parent`. 
+        children = [os.path.join(parent, x) for x in os.listdir(parent)]
+        # Recurse down by calling `get_normalized_catalog` for each child.
+        normalized_catalog['contains'] = [get_normalized_catalog(child) for child in children]
 
-    :path: Relative path to file.
-    :content_dict: Dictionary to write out key-value pairs.
+        # Determine if `child` is in a valid metadata input format.
+        for child in children:
+            _, ext = os.path.splitext(child)
+            # TODO Support metadata input format flags: -m {xml, json}
+            if ext in ['.csv', '.tsv']:
+                # Update `normalized_catalog`.
+                normalized_catalog = pool_metadata(child, normalized_catalog)
+    else:
+        normalized_catalog['type'] = 'file'
+        normalized_catalog['path'] = path
+        # TODO optimize this magic-call, it seems redundant.
+        normalized_catalog['media_type'] = magic.from_file(path, mime=True)
+
+    return normalized_catalog
+
+def pool_metadata(tagfile, normalized_catalog):
+    """Collects key-value pairs from a given metadata tag file (here '.csv' or '.tsv'),
+    then updates a given normalized catalog.
+
+    :tagfile: Relative path to metadata file.
+    :normalized_catalog: Dictionary to write out key-value pairs.
     :returns: Updated content dictionary.
 
     """
-    # TODO test filetype for json or xml
+    # Initial state.
+    toread = False 
 
-    # Set initial state.
-    file_is_csv = False 
+    # TODO test filetype for json or xml
 
     # Error trial for existence of key-value pairs.
     try:
-        with open(path, newline='') as file:
+        with open(tagfile, newline='') as file:
             # Error trial for ill-formed csv files.
             try:
                 dialect = csv.Sniffer().sniff(
-                        file.read(1024), delimiters=',\t')
-                file_is_csv = True
+                        file.read(2048), delimiters=',\t')
+                toread = True
             except csv.Error as e:
-                sys.exit('CSV Sniffer failed to parse file: {}, error: {}'.format(path, e))
+                verbose('CSV Sniffer failed to parse file: {}, error: {}'.format(tagfile, e))
 
-            if file_is_csv:
+            if toread:
                 file.seek(0)
                 reader = csv.reader(file, dialect)
+                # Read the tagfile for pairs.
                 key_value_pairs = {
                         # if one needs to concatenate all rows 2+
                         # rows[0].strip():[x.strip for x in rows[1:]]
                         rows[0].strip():rows[1].strip()
                         for rows in reader if any(rows)}
-                content_dict = {
-                        **content_dict,
+                # Append pairs to dictionary.
+                normalized_catalog = {
+                        **normalized_catalog,
                         **key_value_pairs}
+    # Message for key/value error.
     except csv.Error as e:
-        sys.exit('csv file: {}, line {}: {}'.format(
-            path, reader.line_num, e))
-    return content_dict
+        verbose('Syntax error: key-value pair in file: {}, line {}: {}'.format(
+            tagfile, reader.line_num, e))
+    return normalized_catalog
 
 # }}}
 
 # fakesection: uuid functions {{{
+# abstracted from 2019-06-15-assign-uuids.py
 # e.g., $ rdai -c uuid -d ~/data -o ~/tmp
 
 def get_fixed_seq():
@@ -385,61 +386,44 @@ def mint_uuid(node=None):
     # <https://mysqlserverteam.com/storing-uuid-values-in-mysql-tables/>
     return uuid1(node=node, clock_seq=fixed_seq).hex
 
-def assign_uuid(path):
+def assign_uuid(filepath, overwrite=False):
     import exiftool
     with exiftool.ExifTool() as et:
-        uuid = et.get_tag('ImageUniqueID', path)
-        if uuid == None:
+        # defaults to None if `EXIF:ImageUniqueID` tag is empty
+        uuid = et.get_tag('ImageUniqueID', filepath)
+        if uuid == None or overwrite:
             uuid = mint_uuid()
-            et.execute_json(
-                '-ImageUniqueID={}'.format(uuid).encode(), 
-                path.encode())
-    print("Updated UUID to {} for file {}.".format(uuid, path))
+            et.execute_json('-ImageUniqueID={}'.format(uuid).encode(), filepath.encode())
+            verbose("Wrote tag EXIF:ImageUniqueID={} to file {}.".format(uuid, filepath))
+        else:
+            debug("Found existing tag EXIF:ImageUniqueID={} in file {}.".format(uuid, filepath))
     return uuid
 
-
-# Test uuid has been assigned 
-def search_for_exif_uuid(path):
-    import exiftool
-    with exiftool.ExifTool() as et:
-        uuid = et.get_tag('ImageUniqueID', path)
-    return uuid
-
-# to generate (or update) file uuids
-
-def create_uuids(data_dir, output_dir):
-    #  fakesection: define the renaming as a dictionary mapping
+def get_files_under(dirpath):
     from pathlib import Path
-    import os
+    for p in sorted(Path(dirpath).glob('**/*')):
+        if p.is_file():
+            yield p
 
-path_to_pages = os.path.join(os.pardir, 'import', 'data')
-path_for_export = os.path.join(os.pardir, 'export')
+def generate_uuids_under(data_dir):
+    # TODO configuration file for assignment rules?
+    """Creates a dictionary whose keys are paths relative to `scripts`
+    and whose values are tuples of semi-sequentially assigned UUIDs.
 
-def find_pages(some_path):
-    for filepath in sorted(Path(some_path).glob('**/*')):
-        if os.path.isfile(filepath):
-            yield filepath
-
-def assign_uuids(iterator):
-    """creates a dictionary whose keys are paths relative to `scripts`
-    and whose values are tuples of semi-sequentially assigned UUIDs 
-    and the original file extensions
-
-    :iterator: iter object of posix_paths to pages (image files)
-    :returns: dictionary of UUIDs (assigned calling sequential_uuid())
-    and file extensions
+    :data_dir: Relative path to data (image) files.
+    :returns: Dictionary of UUIDs (assigned calling sequential_uuid()) and file extensions?
 
     """
     assignments = []
-    for page in iterator:
+    for page in get_files_under(dirpath):
         page_ext = os.path.splitext(page)[1]
         assignments.extend((page, (sequential_uuid(), page_ext)))
     return assignments
 
-# TODO
-# {sequential_uuid().hex : [str(image), magic.from_file(str(image), mime=True), os.path.getsize(str(image))] for image in find_images(os.path.join(git_repo_abs_dir(), "stage"))}
-# DataFrame.from_dict(d, orient='index', columns=['file_path', 'mime_type', 'file_size'])
-# df[df.mime_type.str.startswith("image")]
+
+{sequential_uuid().hex : [str(image), magic.from_file(str(image), mime=True), os.path.getsize(str(image))] for image in find_images(os.path.join(git_repo_abs_dir(), "stage"))}
+DataFrame.from_dict(d, orient='index', columns=['file_path', 'mime_type', 'file_size'])
+df[df.mime_type.str.startswith("image")]
 
 # }}}
 
@@ -465,5 +449,11 @@ def rename_by_uuids(data_dir, output_dir):
 # to retrieve the database config and handle errors
 # to initialize a test database with the rdai schema
 # to inject bundled metadata into the test database
+2019-06-25-create-sql-engine.py
 
 # }}}
+
+# fakesection: NARA functions {{{ # 
+
+2019-06-01-sample-downloads.py
+#  1}}} # 
