@@ -63,7 +63,6 @@ Function definitions for the RDA images script (rdai).
 #     raise ValueError('the "{}" component is not a valid RDAI option'.format(args.component))
 #  }}} #
 
-
 # fakesection: messaging functions {{{ # 
 
 # These functions were originally part of MathBook XML.
@@ -283,45 +282,56 @@ def break_windows_path(python_style_dir):
 
 # TODO def create_catalog(data_dir, output_dir, args.metadata_input):
 
-def get_normalized_catalog(path):
-    """Catalogs the files and directories below the provided relative path,
+def get_normalized_catalog(data_dir):
+    """Catalogs the files and directories below the data_dir (relative path),
     given '.csv' or '.tsv' metadata (TODO or '.json') in the directory tree.
 
-    :pool_metadata: recursive-step "metadata gathering" function defined below.
+    :pool_metadata: "metadata gathering" function defined below.
 
-    :path: Relative path to directory to be cataloged. Should be a directory.
+    :data_dir: Relative path to directory to be cataloged. Should be a directory.
     :returns: Nested json describing files, directories, and metadata.
 
     """
     from pathlib import Path
     import os
-    parent = Path(path)
+    import magic
+
+    # Initialize dictionary.
     normalized_catalog = {} 
+    # Suppose data_dir is a parent.
+    parent = Path(data_dir)
 
     if parent.is_dir():
-        # Find relative path to each file under `parent`. 
+        # List relative paths to children.
         children = [os.path.join(parent, x) for x in os.listdir(parent)]
         # Recurse down by calling `get_normalized_catalog` for each child.
-        normalized_catalog['contains'] = [get_normalized_catalog(child) for child in children]
+        normalized_catalog['contents'] = [get_normalized_catalog(child) for child in children]
+        # WARNING. We reserve the key 'contents' for inclusion of lists of child
+        # dictionaries. Whence, the key 'contents' should appear 0 or 1 times in
+        # each child dictionary.
 
-        # Determine if `child` is in a valid metadata input format.
+        # Determine if `child` is a metadata tag file, and if so, in which input format.
         for child in children:
             _, ext = os.path.splitext(child)
-            # TODO Support metadata input format flags: -m {xml, json}
+            # TODO Test for xml and json.
             if ext in ['.csv', '.tsv']:
-                # Update `normalized_catalog`.
+                # Update `normalized_catalog` with metadata from child.
                 normalized_catalog = pool_metadata(child, normalized_catalog)
+
+    # If the parent is not a directory, write out file-level metadata.
+    # This is the floor of the recursive function call.
     else:
-        normalized_catalog['type'] = 'file'
-        normalized_catalog['path'] = path
-        # TODO optimize this magic-call, it seems redundant.
-        normalized_catalog['media_type'] = magic.from_file(path, mime=True)
+        normalized_catalog['file_path'] = str(parent)
+        normalized_catalog['media_type'] = magic.from_file(parent, mime=True)
+        # Eventually I'd like to restructure the program to recurse on
+        # filetypes, so as to avoid reading headers redunandtly. At that
+        # point, python-magic might not need to test for the file media_type. 2019-07-27
 
     return normalized_catalog
 
 def pool_metadata(tagfile, normalized_catalog):
     """Collects key-value pairs from a given metadata tag file (here '.csv' or '.tsv'),
-    then updates a given normalized catalog.
+    then updates a given normalized catalog. TODO Add args for json or xml.
 
     :tagfile: Relative path to metadata file.
     :normalized_catalog: Dictionary to write out key-value pairs.
@@ -329,38 +339,41 @@ def pool_metadata(tagfile, normalized_catalog):
 
     """
     # Initial state.
-    toread = False 
+    to_parse = False 
 
-    # TODO test filetype for json or xml
-
-    # Error trial for existence of key-value pairs.
+    # Test the well-formedness of key/value pairs in the tagfile.
     try:
         with open(tagfile, newline='') as file:
-            # Error trial for ill-formed csv files.
+
+            # Read head of CSV file and determine dialect.
             try:
-                dialect = csv.Sniffer().sniff(
-                        file.read(2048), delimiters=',\t')
-                toread = True
+                dialect = csv.Sniffer().sniff(file.read(2048), delimiters=',\t')
+                # If we can parse the header, then toggle to_parse and read the rest.
+                to_parse = True
             except csv.Error as e:
                 verbose('CSV Sniffer failed to parse file: {}, error: {}'.format(tagfile, e))
 
-            if toread:
+            if to_parse:
                 file.seek(0)
                 reader = csv.reader(file, dialect)
-                # Read the tagfile for pairs.
+                # Read the tagfile (for the first two fields from each non-empty row).
                 key_value_pairs = {
-                        # if one needs to concatenate all rows 2+
-                        # rows[0].strip():[x.strip for x in rows[1:]]
                         rows[0].strip():rows[1].strip()
                         for rows in reader if any(rows)}
-                # Append pairs to dictionary.
+                        # To concatenate all rows 2+, try. <ccg, 2019-07-27> 
+                        # rows[0].strip():[x.strip for x in rows[1:]]
+                # Add key_value_pairs to the current level of the
+                # normalized_catalog dictionary.
                 normalized_catalog = {
                         **normalized_catalog,
                         **key_value_pairs}
+
     # Message for key/value error.
     except csv.Error as e:
         verbose('Syntax error: key-value pair in file: {}, line {}: {}'.format(
             tagfile, reader.line_num, e))
+
+    # Return normalized_catalog updated with key/value pairs from tagile.
     return normalized_catalog
 
 # }}}
