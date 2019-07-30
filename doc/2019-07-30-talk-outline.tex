@@ -1,0 +1,100 @@
+\documentclass{beamer}
+
+\mode<presentation>						% Set options
+{
+  \usetheme{default}					% Set theme
+  \usecolortheme{default} 				% Set colors
+  \usefonttheme{default}  				% Set font theme
+  \setbeamertemplate{caption}[numbered]	% Set caption to be numbered
+}
+
+% Uncomment this to have the outline at the beginning of each section highlighted.
+%\AtBeginSection[]
+%{
+%  \begin{frame}{Outline}
+%    \tableofcontents[currentsection]
+%  \end{frame}
+%}
+
+
+\usepackage[varg]{txfonts}
+\usepackage[T1]{fontenc}
+\usepackage[sfdefault,scaled=0.95]{FiraSans}
+\usepackage[small,euler-digits]{eulervm}
+\usepackage{inconsolata}
+\usepackage{textcomp}
+\usepackage{graphicx}					% For including figures
+\usepackage{booktabs}					% For table rules
+\usepackage{hyperref}					% For cross-referencing
+
+\title{Towards Categorical Metadata\\ for Unreduced Climate Observations}
+\author{Colton Grainger}
+\institute{University of Colorado}
+\date{\today}
+\begin{document}
+% Title page
+% This page includes the informations defined earlier including title, author/s, affiliation/s and the date
+\begin{frame}
+  \titlepage
+
+\vfill
+\begin{figure}
+    \includegraphics[height=4.5em]{img/CISL-contemp-logo-blue-square}\hspace{0.5em}
+    \includegraphics[height=5em]{img/cu-logo}\hspace{0.5em}
+    \includegraphics[height=5em]{img/nsf-logo}
+\end{figure}
+\end{frame}
+
+% Outline
+% This page includes the outline (Table of content) of the presentation. All sections and subsections will appear in the outline by default.
+\begin{frame}{$3 \times 3$ outline}
+  \tableofcontents
+    \begin{figure}
+        \includegraphics[width=\textwidth]{img/2019-07-30-jeannette-2}
+    \end{figure}
+\end{frame}
+
+\section{Tasks}
+
+\begin{frame}{Tasks}
+    \begin{itemize}
+        \item Gather images at a \textbf{single resource}.
+        \item Establish a \textbf{common description} framework for image \textbf{metadata}.
+        \item Provide \textbf{bulk, programmatic access} to query-matching subsets of images.
+	\end{itemize}
+\end{frame}
+
+\section{Things Built}
+
+\begin{frame}{Things Built}
+	\begin{columns}
+		\column{.33\textwidth}
+        MySQL schema. Makefile.
+
+        \column{.33\textwidth}
+        Agnostic ingest scripts.
+        \texttt{assign\_uuid()}.
+        Bundle metadata.
+
+        \column{.33\textwidth}
+        \texttt{rda.ucar.edu/i/<uuid>}
+	\end{columns}
+\end{frame}
+
+\section{TODO}
+
+\begin{frame}{TODO}
+	\begin{columns}
+		\column{.33\textwidth}
+        RELAX NG validator.
+
+        \column{.33\textwidth}
+        Python pandas interface.
+        Query methods.
+
+        \column{.33\textwidth}
+        \texttt{rda.ucar.edu/i/<query>}
+	\end{columns}
+\end{frame}
+
+\end{document}
