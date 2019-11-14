@@ -2,13 +2,7 @@
 #
 # 2019-07-10 
 # Colton Grainger 
-# 
 # Adapted from https://github.com/rbeezer/mathbook/tree/dev/script
-# Copyright 2010-2016 Robert A. Beezer
-# These functions were originally part of MathBook XML.
-# MathBook XML is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 2 or version 3.
 
 """
 rdai utility script
