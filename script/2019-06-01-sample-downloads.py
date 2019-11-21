@@ -27,10 +27,7 @@ df = pd.read_csv(os.path.join(parentDirectory, 'import', '2018-05-16-NARA-master
 df.rename(str.strip, axis='columns',inplace=True)
 df.drop(columns=['Box or Volume Number.1'], inplace=True)
 
-# Take sample from each record group;
-# shuffling out N random ships to perform 
-# a generalizable reaction from the frequencist's
-# perspective. We parse and disbanden these. 
+# take sample from each record group
 NARA_record_group_dict = dict([(23, 'USCS'), # Records of the Coast and Geodetic Survey
                                (24, 'Navy'), # Records of the Bureau of Naval Personnel
                                (26, 'CG'), # Records of the U.S. Coast Guard
