@@ -409,7 +409,7 @@ def tail_unnormalize_catalog(flatdict,lowerdicts):
 def unnormalize_catalog(normalized_catalog):
     flatdict = {k:v for k,v in normalized_catalog.items() if k != 'contents'}
     lowerdicts = normalized_catalog['contents']
-    catalog = tail_unnormalize_catalog(flatdict, lowerdicts)
+    catalog = flatten_list(tail_unnormalize_catalog(flatdict, lowerdicts))
     return catalog
 
 def write_timestamped_catalog(catalog, output_dir):
