@@ -248,22 +248,16 @@ def assign_uuid(filepath, overwrite=False):
     mind_uuid() to EXIF:ImageUniqueID tag."""
     import exiftool
     with exiftool.ExifTool() as et:
-        # By default, if the `EXIF:ImageUniqueID` tag is empty, uuid is assigned
-        # to None.
         uuid = et.get_tag('ImageUniqueID', filepath)
 
-        # If a uuid exists and overwrite is False, do nothing.
-        if uuid != None and not overwrite:
+        # By default, if the `EXIF:ImageUniqueID` tag is empty, uuid is assigned to None.
+        if uuid is not None:
             verbose("Tag EXIF:ImageUniqueID={} already exists in file {}.".format(uuid, filepath))
 
-        # Else, no uuid was read by exiftool, or overwrite has been set to True.
-        else:
+        if (uuid is None) or (overwrite is True):
             uuid = mint_uuid()
             et.execute('-ImageUniqueID={}'.format(uuid).encode(), filepath.encode())
-            # Only report back when the file was updated
-            uuid = et.get_tag('ImageUniqueID', filepath)
-            if uuid != None:
-                verbose("Wrote tag EXIF:ImageUniqueID={} to file {}.".format(uuid, filepath))
+            verbose("Wrote tag EXIF:ImageUniqueID={} to file {}.".format(uuid, filepath))
 
     # Pass either the read uuid from exiftool or the assigned from mint_uuid().
     return uuid
@@ -324,7 +318,7 @@ def pool_metadata(tagfile, normalized_catalog):
     # Return normalized_catalog updated with key/value pairs from tagfile.
     return normalized_catalog
 
-def get_normalized_catalog(data_dir):
+def get_normalized_catalog(data_dir, forcing=False):
     """Catalogs the files and directories below the data_dir (relative path),
     given '.csv' or '.tsv' metadata (TODO or '.json') in the directory tree.
 
@@ -347,7 +341,7 @@ def get_normalized_catalog(data_dir):
 
     if parent.is_dir():
         # List relative paths to children.
-        children = [os.path.join(parent, x) for x in os.listdir(parent)]
+        children = [os.path.join(parent, x) for x in sorted(os.listdir(parent))]
         # Recurse down by calling `get_normalized_catalog` for each child.
         normalized_catalog['contents'] = [get_normalized_catalog(child) 
                 for child in children 
@@ -373,7 +367,9 @@ def get_normalized_catalog(data_dir):
         # Eventually I'd like to restructure the program to recurse on
         # filetypes, so as to avoid reading headers redunandtly. At that
         # point, python-magic might not need to test for the file media_type. 2019-07-27
-        normalized_catalog['uuid'] = assign_uuid(str(parent))
+        if normalized_catalog['media_type'].startswith("image"):
+            normalized_catalog['uuid'] = assign_uuid(str(parent), overwrite=forcing)
+            print("forcing", forcing)
 
     return normalized_catalog
 
