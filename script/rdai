@@ -256,7 +256,7 @@ def assign_uuid(filepath, overwrite=False):
 
         if (uuid is None) or (overwrite is True):
             uuid = mint_uuid()
-            et.execute('-ImageUniqueID={}'.format(uuid).encode(), filepath.encode())
+            et.execute('-overwrite_original -ImageUniqueID={}'.format(uuid).encode(), filepath.encode())
             verbose("Wrote tag EXIF:ImageUniqueID={} to file {}.".format(uuid, filepath))
 
     # Pass either the read uuid from exiftool or the assigned from mint_uuid().
@@ -318,7 +318,7 @@ def pool_metadata(tagfile, normalized_catalog):
     # Return normalized_catalog updated with key/value pairs from tagfile.
     return normalized_catalog
 
-def get_normalized_catalog(data_dir, forcing=False):
+def get_normalized_catalog(data_dir, overwrite=False):
     """Catalogs the files and directories below the data_dir (relative path),
     given '.csv' or '.tsv' metadata (TODO or '.json') in the directory tree.
 
@@ -343,7 +343,7 @@ def get_normalized_catalog(data_dir, forcing=False):
         # List relative paths to children.
         children = [os.path.join(parent, x) for x in sorted(os.listdir(parent))]
         # Recurse down by calling `get_normalized_catalog` for each child.
-        normalized_catalog['contents'] = [get_normalized_catalog(child) 
+        normalized_catalog['contents'] = [get_normalized_catalog(child, overwrite=overwrite) 
                 for child in children 
                 if not os.path.basename(child).startswith(".")]
         # Note. We reserve the key 'contents' for inclusion of lists of child
@@ -368,8 +368,7 @@ def get_normalized_catalog(data_dir, forcing=False):
         # filetypes, so as to avoid reading headers redunandtly. At that
         # point, python-magic might not need to test for the file media_type. 2019-07-27
         if normalized_catalog['media_type'].startswith("image"):
-            normalized_catalog['uuid'] = assign_uuid(str(parent), overwrite=forcing)
-            print("forcing", forcing)
+            normalized_catalog['uuid'] = assign_uuid(str(parent), overwrite=overwrite)
 
     return normalized_catalog
 
