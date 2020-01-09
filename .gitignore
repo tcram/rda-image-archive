@@ -1,0 +1,10 @@
+__pycache__
+.ipynb_checkpoints
+.DS_Store
+user/mysql_args
+
+*.JPG
+*.jpg
+*.jp2
+*.pdf
+*.png

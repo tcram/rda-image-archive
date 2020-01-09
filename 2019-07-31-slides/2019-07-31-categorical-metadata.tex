@@ -1,0 +1,216 @@
+\documentclass{beamer}
+
+\mode<presentation>						% Set options
+{
+  \usetheme{Hannover}					% Set theme
+  \usecolortheme{rose} 				% Set colors
+  % \usefonttheme{structurebold}  				% Set font theme
+  \setbeamertemplate{caption}[numbered]	% Set caption to be numbered
+}
+
+% % Uncomment this to have the outline at the beginning of each section highlighted.
+% \AtBeginSection[]
+% {
+%   \begin{frame}
+%     \tableofcontents[currentsection]
+%   \end{frame}
+% }
+
+\usepackage[varg]{txfonts}
+\usepackage[T1]{fontenc}
+\usepackage[sfdefault,scaled=0.95]{FiraSans}
+\usepackage[small,euler-digits]{eulervm}
+\usepackage{inconsolata}
+\usepackage{textcomp}
+\usepackage{graphicx}					% For including figures
+\usepackage{booktabs}					% For table rules
+\usepackage{hyperref}					% For cross-referencing
+
+\title[Towards Categorical Metadata]{Towards Categorical Metadata\\ for Unreduced Climate Observations}
+\author[C.~Grainger]{Colton Grainger}
+\institute{University of Colorado Boulder}
+\date{\today}
+
+\usepackage[all]{xy}
+\usepackage{listings}
+
+\begin{document}
+
+% opening
+\begin{frame}
+    \hspace{-5.65em}\includegraphics[width=4.28em]{img/git_qrcode.png}$\xymatrix{& \mathsf{slides} \ar[l]}$
+\titlepage
+\begin{figure}
+    \includegraphics[height=4.5em]{img/CISL-contemp-logo-blue-square}\hspace{0.5em}
+    \includegraphics[height=5em]{img/cu-logo}\hspace{0.5em}
+    \includegraphics[height=5em]{img/nsf-logo}
+\end{figure}
+\end{frame}
+
+% tasks
+\section{Status Quo}
+
+\begin{frame}
+
+    \begin{center}
+        unreduced data from $\sim$100 Tb collection of images (ACRE)
+    \end{center}
+
+
+    \begin{beamerboxesrounded}{marine logbooks 1870--1950}
+        \includegraphics[height=12.5em]{img/mary-1879}
+        \hspace{0.5em}
+        \includegraphics[height=12.5em]{img/idaho-1944}
+    \end{beamerboxesrounded}
+    \vfill
+
+    \begin{beamerboxesrounded}{land stations 1870--1930}
+        Indian Daily Weather Reports, Todd Folios, etc.
+    \end{beamerboxesrounded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+    \begin{example}[reduction of 6Mb image to a 2Kb time series]
+        \begin{figure}
+            \includegraphics[width=\textwidth]{img/2019-07-30-jeannette}
+            \caption{
+                24 hours on the USS Jeannette (P. Brohan)
+            }
+        \end{figure}
+    \end{example}
+\end{frame}
+
+\begin{frame}[fragile]
+  \begin{beamerboxesrounded}{\textit{url}}
+        \url{twitter.com/NCAR\_RDA/status/1144058111654711296}
+  \end{beamerboxesrounded}
+
+  \begin{minipage}[t]{0.43\linewidth}
+      \begin{figure}
+      \textit{qrcode}
+          \includegraphics[width=\textwidth]{img/brohan_qrcode}
+          \caption{
+            \emph{CISL Seminar}, P.~Brohan (2019)
+          }
+      \end{figure}
+  \end{minipage}
+  \begin{minipage}[t]{0.55\linewidth}
+      \begin{example}
+      \begin{itemize}
+        \item $2^6$ bytes $\sim$ 70 ASCII characters
+        \item $2^{12}$ bytes $\sim$ $441 \times 441$ pixels
+        \item a \texttt{qrcode} \textbf{reduces} to a \texttt{url}
+      \end{itemize}
+    \end{example}
+
+\begin{verbatim}
+$ exiftool brohan_qrcode.png
+File Size : 2.7 kB
+Image Size : 441x441
+MIME Type : image/png
+\end{verbatim}
+\end{minipage}
+\end{frame}
+
+\section{Alternative}
+
+\begin{frame}[fragile]
+  \begin{center}
+    \textit{metadata}\\
+    \texttt{\{'key:value' for key in <schema>\}}
+  \end{center}
+    \textit{what available metadata has low noise-to-signal ratio?}
+
+\begin{minipage}[t]{0.5\linewidth}
+    \begin{figure}
+        \includegraphics[width=0.9\textwidth]{img/idaho-1944}
+        \caption{
+            May 1944, Idaho (BB-42)
+        }
+    \end{figure}
+\end{minipage}
+%either math model or schema here TODO
+\begin{minipage}[t]{0.45\linewidth}
+\hspace{2em}
+\begin{verbatim}
+$ exiftool Idaho-BB-0034.JPG 
+File Size : 4.6 MB
+Image Size : 3744x5616
+MIME Type : image/jpeg
+\end{verbatim}
+        \begin{description}
+            \item[arc] archive
+            \item[doc] document
+            \item[img] image
+            \item[obs] observation
+            \item[plt] platform
+        \end{description}
+\end{minipage}
+\end{frame}
+
+\begin{frame}
+    \begin{itemize}
+    \item Roughly, an image in the category $\text{img}$ approximates a time-series $\sigma \colon [t_0, t_1] \to \mathscr{S}$, where $\mathscr{S}$ is the state space of meteorological variables. 
+
+    \item An observation is $\rho(t)$ evaluated at a time $t$.
+
+    \item A platform in the category $\text{plt}$ approximates a time-series $\lambda \colon [t_0, t_1] \to M$, where $M$ is a differentiable manifold.
+    \end{itemize}
+
+    \begin{minipage}[t]{0.45\linewidth}
+        \begin{description}
+            \item[arc] archive
+            \item[doc] document
+            \item[img] image
+            \item[obs] observation
+            \item[plt] platform
+        \end{description}
+    \end{minipage}
+    \begin{minipage}[t]{0.40\linewidth}
+        \begin{block}{dependencies}
+            $\xymatrix{
+                \text{arc} \ar@{->>}[dr] &  & \ar@{->>}@/^5px/[dl] \text{plt} \\
+                & \text{doc} \ar@{.>}@/^5px/[ur]^{\exists!} \ar@{->>}[dl] & \\
+                \text{img} \ar@{->>}[rr] & & \text{obs} \ar@{_{(}->}[uu]_{\text{update}}}$
+        \end{block}
+    \end{minipage}
+\end{frame}
+
+\subsection{3 Tasks}
+
+\begin{frame}
+    \begin{enumerate}
+        \item Gather images into (at least) \textbf{one repository}. 
+        \item Establish a \textbf{common description framework} for image metadata.
+        \item Provide \textbf{bulk, programmatic access} to image subsets.
+    \end{enumerate}
+\end{frame}
+
+\subsection{Functions}
+
+\begin{frame}
+    \begin{description}
+        \item[repo] MySQL schema with Makefile. \texttt{assign\_uuid()}.
+        \item[framework] Agnostic ingest scripts.  Bundle metadata.
+        \item[access] \texttt{rda.ucar.edu/i/<uuid>}
+    \end{description}
+\end{frame}
+
+\subsection{Interfaces}
+\begin{frame}
+    \begin{description}
+        \item[repo] Conflict resolution for \texttt{assign-uuid()}.
+        \item[framework] RELAX NG validator.
+        \item[access] \texttt{rda.ucar.edu/i/<query>}
+    \end{description}
+\end{frame}
+
+\section{References}
+\begin{frame}
+    \begin{figure}
+        \includegraphics[width=0.5\textwidth]{img/git_qr.png}
+        \caption{git repo}
+    \end{figure}
+\end{frame}
+\end{document}
