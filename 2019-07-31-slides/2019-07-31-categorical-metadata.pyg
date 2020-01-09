@@ -1,0 +1,63 @@
+
+\begin{frame}
+    \begin{minipage}[t]{0.48\linewidth}
+        \begin{figure}
+            \includegraphics[width=0.9\textwidth]{img/brohan_qrcode}
+            \caption{
+                P. Brohan, \emph{New Uses for Old Weather} (2019)
+            }
+        \end{figure}
+    \end{minipage}
+    \begin{minipage}[t]{0.48\linewidth}
+        \begin{figure}
+            \includegraphics[width=0.9\textwidth]{img/arch_qrcode}
+            \caption{
+                W. Kent, \emph{Simple Guide to Five Normal Forms} (1983)
+            }
+        \end{figure}
+    \end{minipage}
+\end{frame}
+\subsection{3 Tasks}
+
+\begin{frame}
+    \begin{itemize}
+        \item Gather images at a \textbf{single resource}.
+        \item Establish a \textbf{common description framework} for image metadata.
+        \item Provide \textbf{bulk, programmatic access} to image subsets.
+    \end{itemize}
+\end{frame}
+
+\section{Functions}
+
+\begin{frame}
+	\begin{columns}
+		\column{.33\textwidth}
+        MySQL schema. Makefile.
+
+        \column{.33\textwidth}
+        Agnostic ingest scripts.
+        \texttt{assign\_uuid()}.
+        Bundle metadata.
+
+        \column{.33\textwidth}
+        \texttt{rda.ucar.edu/i/<uuid>}
+	\end{columns}
+\end{frame}
+
+\section{}
+
+\begin{frame}
+	\begin{columns}
+		\column{.33\textwidth}
+        RELAX NG validator.
+
+        \column{.33\textwidth}
+        Python pandas interface.
+        Query methods.
+
+        \column{.33\textwidth}
+        \texttt{rda.ucar.edu/i/<query>}
+	\end{columns}
+\end{frame}
+
+\end{document}
