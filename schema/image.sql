@@ -45,7 +45,6 @@ values
     32718
 );
 
-/* TODO */
-/* For development, I am abandoning binary representation in favor of hexidecimal representations. We should switch over to binary for memory considerations. */
+/* TODO save memory for indexing */
 /* image_id binary(16) primary key comment '16-byte representation of 32-char hexidecimal image UUID. Generated during image file import (by removing hyphens from 36-char UUID).', */
 /* image_id_hex char(32) generated always as (hex(image_id)), */

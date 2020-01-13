@@ -1,58 +1,68 @@
 # rda-image-archive
 
-This repository is for the development of a digital image archive (for historical climate documents) at the National Center for Atmospheric Research. Its anticipated uses include:
+This repository has been **obsoleted** by <https://github.com/NCAR/rdai/>, under development at <https://github.com/coltongrainger/rdai>.
 
-1. storing image files,
-1. subsetting image files for bulk access,
-1. associating images with rich meteorological metadata, and
-1. providing a public API.
+## overview
 
-## layout
+The software in this repository has three main tasks to accomplish:
 
-- `schema/` is for the metadata schema,
-- `script/` contains 
-    - a polished `rdaia` python executable (which is a sort of "swiss-army knife" for the metadata provider) and 
-    - one-off exploratory scripts labelled by date. 
-- `examples/` is for test data sets.
+1. To gather images into (at least) one repository.
+2. To establish a common description framework for image metadata.
+3. To provide bulk, programmatic access to image subsets.
 
-(Beware: relative paths for scripts written prior to 2019-07-01 are broken.)
+To this end, this repository contains
 
-## references
+- Rough instructions for image providers to "bundle" metadata with their images.
+- A MySQL metadata schema and makefile.
+- Jupyter notebooks to provide minimal working examples for both providers and archivists.
 
-This repository has made use of source code developed elsewhere:
+This repository does not yet contain the following features:
 
-- <https://github.com/riceissa/aiwatch/>
-- <https://github.com/rbeezer/mathbook>
+- A MySQL and PHP configuration to access images at `rda.ucar.edu/i/<uuid>`.
+- A MySQL and PHP configuration to query images at `rda.ucar.edu/i/<query>`.
+- Functionality to detect duplication images.
+- A RELAX NG metadata validator.
 
-Additionally, this repo was based on a survey of the following:
+## documentation
 
-- DataCite Metadata Working Group. (2019). DataCite Metadata Schema Documentation for the Publication and Citation of Research Data. Version 4.2. DataCite e.V. https://doi.org/10.5438/bmjt-bx77
-- [White Paper: Uploading to Internet Archive](https://about.biodiversitylibrary.org/help/digitization-resources/upload/#Background-Getting%20an%20identifier-Mandatory%20Metadata). Joel Richard <richardjm@si.edu>, Smithsonian Libraries. Retrieved June 6, 2019.
-- [US National Archives Catadocument API](https://github.com/usnationalarchives/Catadocument-API/). Dominic Byrd-McDevitt. Retrieved June 6, 2019.
+I wrote this schema to capture the (rich) meteorological metadata available for (19th and 20th century) marine logbooks and to support (at least) two users: Kevin Wood (NOAA/UW.) and Philip Brohan (UK Met Office).
 
-# Documentation
+We'll now minimize details and abstract that schema I prepared for Wood and Brohan into a "lite" version.
 
-This part of the README aims to propose
 
-1. a set of required metadata fields,
-1. a data exchange format, and
-1. a procedure for updating a test database called `images`.
+```
+arc | archive
+pla | platform
+doc | document
+img | image
+obs | observation
+```
 
-Before going into detail, there are a few preliminaries to address.
+There are these (functional) dependencies
 
-### Dependencies
+```txt
+arc   pla
+   \ /
+   doc
+    |
+   img
+    |
+   obs
+```
 
-- to create a new database
-    - GNU Make <https://www.gnu.org/software/make/>
-    - MySQL server <https://dev.mysql.com/downloads/mysql/5.7.html> (or any version > 5.7)
+This Hasse diagram indicates, e.g., 
 
-- to run the scripts
-    - Python 3 <https://www.python.org/download/releases/3.0/>
-    - python-magic <https://pypi.org/project/python-magic/>
-    - pandas <https://pandas.pydata.org/>
-    - TODO list other required python libraries <ccg, 2019-07-08>
+1. The table `arc` provides a required foreign key for records of the table `doc`.
+2. The table `img` has a required foreign key for records of the table `obs`.
+3. Each record in the table `obs` requires the foreign key for its unique parent record in `img`, and so too any unique record in `img` requires the foreign key for its parent in `pla`.
 
-### Local installation
+In the context of marine logbooks, the rules above specify to these assumptions and constraints:
+
+1. Each document has an archive.
+2. Each observation is from an image file.
+3. Each image file is a scan of a meteorological document from some platform.
+
+### local installation
 
 First, if one has a local mysql installation, I suggest initializing a test database `images`. 
 
@@ -80,12 +90,6 @@ First, if one has a local mysql installation, I suggest initializing a test data
    ```
    make
    ```
-
-(I have only tested this installation on Linux.) Withstanding errors, one should have access to a local copy of the test database `images`. 
-
-### Most recent database schema
-
-One may checkout the repository at a certain date, then run `make describe` for the revised schema at that date. The `Makefile` will be configured correctly for commits after 2019-06-25, but `make describe` is only guaranteed to return sensible output after 2019-07-08.
 
 ### Outline of database schema (as of 2019-07-05)
 
@@ -459,11 +463,10 @@ Field | Type | Description
 
 This concludes the discussion of required and recommended metadata. Again, I am open to feedback and criticism with respect to any part of the database ontology. 
 
-## File exchange formats
+## sources
 
-We proceed to document two (hopefully equivalent) file exchange formats:
+The software in this repository was designed with reference to the following:
 
-- a *flattened* (or *unnormalized*) `csv` format, and
-- a *normalized* `json` format.
-
-> TODO <ccg, 2019-06-25> > 
+- <https://github.com/riceissa/aiwatch/>. Issa Rice.
+- DataCite Metadata Schema Documentation for the Publication and Citation of Research Data. Version 4.2. DataCite e.V. <https://doi.org/10.5438/bmjt-bx77>
+- [US National Archives Catadocument API](https://github.com/usnationalarchives/Catadocument-API/). Dominic Byrd-McDevitt.
