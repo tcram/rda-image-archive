@@ -1,6 +1,6 @@
 # rda-image-archive
 
-This repository has been **obsoleted** by <https://github.com/NCAR/rdai/>, under development at <https://github.com/coltongrainger/rdai>.
+This repository has contains developmental code that has been **obsoleted** by <https://github.com/NCAR/rda-image-archive/>.
 
 ## overview
 
